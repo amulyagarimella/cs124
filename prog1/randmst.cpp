@@ -24,7 +24,7 @@ the Euclidean distance between its endpoints.
 */
 
 // TODO: MST function
-// heap???!?!?!?!?
+// store potential edges to add in min heap
 // k(n) estimator
 
 // TODO: return average MST edge weight

@@ -1,51 +1,44 @@
 #include <iostream>
 #include <cmath>
 #include <tuple>
-/*
-Thoughts
-- maybe store adjacency lists as min-heap bintrees for each vertex on edge weight
-*/
-template <class T>
-struct graphD {
-    T nodes[];
-    
+#include <stdlib.h> 
+using namespace std;
 
-
-};
-
-struct graph0 {
-    int nodes[];
-
-};
-
-struct graph2 {
-
-};
-
-struct graph3{
-
-};
-
-struct graph4 {
-
+struct CompleteGraph {
+    vector<vector<float>> nodes;
+    vector<vector<float>> edges;
 };
 
 // TODO: what to do with overflow? -> prob unlikely bc small #s
-template <class T>
-float euclideanDistance (T (&points)[2]) {
+float euclideanDistance (vector<float> point1, vector<float> point2) {
     float sumDistSquared = 0;
-    for (int i : std::tuple_size_v<T>) {
-        sumDistSquared += (points[0][i] - points[1][i]) ** 2;
+    for (int i : point1.size()) {
+        sumDistSquared += pow(point1[i] - point2[i], 2);
     }
     return sqrt(sumDistSquared);
 }
 
-int generateGraph (int n, int dim) {
-    /*
-    input: # points, # dimensions
-    output: 
-        - adjacency list
-        - edge weights
-    */
-    // rand generate pts of size dim
+// TODO: test, add debug
+template <int n, int dim>
+auto generateGraph (int n, int dim) {
+    srand (time(NULL));
+
+    // initialize nodes
+    CompleteGraph G;
+    G.nodes.resize(n);
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < dim; ++j)
+            float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            G.nodes[i].push_back(r);
+
+    // pairwise edge weights
+    G.edges.resize(n);
+    for (int i = 0; i < n; ++i)
+        G.edges[i].resize(n); //need to resize since pushing only will lead to off-by-one (since no self edges)
+        for (int j = i + 1; j < n; ++j)
+            float weight = euclideanDistance(G.nodes[i], G.nodes[j]);
+            G.nodes[i][j] = weight;
+            G.nodes[j][i] = weight;
+    
+    return G;
 }
