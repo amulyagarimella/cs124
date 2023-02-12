@@ -3,6 +3,10 @@
 
 // TODO: Generate random graph of dim 0, 2, 3, 4
 /* 
+We will be considering complete, undirected graphs. A graph with n vertices is
+complete if all n-choose-2 pairs of vertices are edges in the graph
+(can an adjanceny matrix work? rather than a linked list we have to look thru???)
+
 DIM 0: Complete graphs on n vertices, where the weight of each edge is a real
 number chosen uniformly at random on [0, 1].
 
