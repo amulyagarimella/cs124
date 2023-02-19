@@ -134,7 +134,7 @@ auto MST_prim (CompleteGraph G, int s) {
     CompleteGraph ans;
 
     // pseudo said use set for this one
-    set<int> S;
+    set<bool> S;
 
     PriorityQueue H;
     // push source node
@@ -146,8 +146,23 @@ auto MST_prim (CompleteGraph G, int s) {
         pre[i] = null;
     }
     dist[s] = 0;
-    while H.size() != 0:
-        
+    while !H.empty():
+        int v = H.top().second;
+        int w = H.top().first;
+        pq.pop();
+
+        if (S[u]) {
+            continue;
+        }
+
+        // v := deletemin(h)
+        // S := S∪ {v}
+        // for (v,w) ∈ E and w ∈ V(G) \ S do
+        // if dist[w] > length(v,w)
+        // dist[w] := length(v,w), prev[w] := v, insert(w,dist[w],H)
+        // fi
+        // rof
+        // end while end Prim
 }
 
 float MST_krusk (vector<float> point1, vector<float> point2) {
