@@ -9,6 +9,7 @@ using namespace std;
 #define MYSTRUCT_H
 
 struct CompleteGraph {
+    // do we want nodes as int or float? am leaning int but do we need float for math reasons
     vector<vector<float> > nodes;
     vector<vector<float> > edges;
 };

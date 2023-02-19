@@ -5,14 +5,9 @@
 #include <stdlib.h> 
 #include <vector>
 #include <set>
+// this is supposed to make completegraph a global struct
 #include "mystruct.h"
 using namespace std;
-
-// define some structure to store MST, diff from completeGraph - do we need to differentiate tho?
-struct MST {
-    vector<vector<float> > nodes;
-    vector<vector<float> > edges;
-};
 
 // Programming problem set 1
 // Nadine Han + Amulya Garimella
@@ -50,14 +45,29 @@ the Euclidean distance between its endpoints.
 // store potential edges to add in min heap
 // k(n) estimator
 
-// prioqueue w/ special item element
+// do we need to define some structure to store MST, diff from completeGraph? they seem to be same type tho
+// struct MST {
+//     vector<vector<float> > nodes;
+//     vector<vector<float> > edges;
+// };
+
+struct vertex {
+    int key;
+    int parent_ptr;
+};
+
+// prioqueue w/ special item element - must manually implement as per pset specs
+// structure is {s : 0} where s is the vertex and 0 is dist
+// see sect 2 notes for pseudo: https://drive.google.com/file/d/1yg2569DDp1bDsvtCP0y-BRntkAG6hndr/view
 
 struct item {
+    // should pt to the vertex not store it b/c unnecessary space probs
     int vertex;
     int dist;
 };
 
 class PriorityQueue {
+    // initialize this for push function
     item value;
     vector<item> heap;
 
@@ -117,31 +127,27 @@ class PriorityQueue {
         }
 };
 
-// prim's
+// prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
 auto MST_prim (CompleteGraph G, int s) {
-    vector<float> dist;
-    vector<int> vertices;
-    set<int> visited;
+    vector<float> dist[G.nodes.size()];
+    vector<int> pre[G.nodes.size()];
+    CompleteGraph ans;
+
+    // pseudo said use set for this one
+    set<int> S;
 
     PriorityQueue H;
+    // push source node
     H.push(s, 0);
 
-    for (int i = 0; i < H.size(); ++i) {
-
+    for (int i = 0; i < G.nodes.size(); ++i) {
+        // replacing infty with int_max! lmk if u disagree tho
+        dist[i] = INT_MAX;
+        pre[i] = null;
     }
-
-dist[v] := ∞, prev[v] :=nil
-rof
-dist[s] := 0
-while H 6= 0/
-v := deletemin(h)
-S := S∪ {v}
-for (v,w) ∈ E and w ∈ V(G) \ S do
-if dist[w] > length(v,w)
-dist[w] := length(v,w), prev[w] := v, insert(w,dist[w],H)
-fi
-rof
-end while end Prim
+    dist[s] = 0;
+    while H.size() != 0:
+        
 }
 
 float MST_krusk (vector<float> point1, vector<float> point2) {
