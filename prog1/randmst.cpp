@@ -192,7 +192,7 @@ auto MST_prim (CompleteGraph G, int s) {
             // find a better ay to check if w in set
             if (*S.find(w_idx) != w_idx) {
                 // TODO how to find the right vertex in the heap????
-                item w = H[w_idx];
+                item w = ;
                 if (w.dist > G.edges[v_idx][w_idx]) {
                     w.dist = G.edges[v_idx][w_idx];
                     // prev[w] := v
