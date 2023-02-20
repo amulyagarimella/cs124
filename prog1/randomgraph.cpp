@@ -4,9 +4,6 @@
 #include <vector>
 using namespace std;
 
-#ifndef MYSTRUCT_H
-#define MYSTRUCT_H
-
 struct CompleteGraph {
     // do we want nodes as int or float? am leaning int but do we need float for math reasons
     // we need floats since the values are in [0,1]
@@ -14,7 +11,6 @@ struct CompleteGraph {
     vector<vector<float> > edges;
 };
 
-#endif
 
 // TODO: what to do with overflow? -> prob unlikely bc small #s
 float euclideanDistance (vector<float> point1, vector<float> point2) {
