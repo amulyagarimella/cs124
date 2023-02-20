@@ -90,56 +90,20 @@ class item {
 
 class PriorityQueue {
     // initialize this for push function
-    item value;
-    vector<item> heap;
-
-    void bubble_up(int i) {
-        // shortcut if the root node is inputted
-        if (i == 0) return;
-
-        int parent = (i - 1) / 2;
-
-        if (heap[i].compare(heap[parent]) < 0) {
-            swap(heap[i], heap[parent]);
-            bubble_up(parent);
-        }
-    }
-
-    void bubble_down(int i) {
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-        int min = i;
-
-        // get the largest child
-        if (left < heap.size() && heap[left].compare(heap[min]) < 0) {
-            min = left;
-        }
-
-        if (right < heap.size() && heap[right].compare(heap[min]) < 0) {
-            min = right;
-        }
-
-        // do the actual comparison
-        if (min != i) {
-            positions[min] = i;
-            positions[i] = min;
-            swap(heap[i], heap[min]);
-            bubble_down(min);
-        }
-    }
-
-    // debugging purpose
-    void print_heap() {
-        cout << "[";
-        for (int i = 0; i < heap.size(); ++i) {
-            heap[i].print();
-        }
-        cout << "]\n";
-    }
-    
-    public:
+    public: 
+        item value;
+        vector<item> heap;
         // TODO maybe make long
         vector<int> positions;
+
+        // debugging purpose
+        void print_heap() {
+            cout << "[";
+            for (int i = 0; i < heap.size(); ++i) {
+                heap[i].print();
+            }
+            cout << "]\n";
+        }
 
         void set_size (int n) {
             positions.resize(n);
@@ -173,6 +137,43 @@ class PriorityQueue {
             positions.empty();
             return heap.empty();
         }
+
+    private:
+        void bubble_up(int i) {
+        // shortcut if the root node is inputted
+        if (i == 0) return;
+
+        int parent = (i - 1) / 2;
+
+            if (heap[i].compare(heap[parent]) < 0) {
+                swap(heap[i], heap[parent]);
+                bubble_up(parent);
+            }
+        }
+
+        void bubble_down(int i) {
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            int min = i;
+
+            // get the largest child
+            if (left < heap.size() && heap[left].compare(heap[min]) < 0) {
+                min = left;
+            }
+
+            if (right < heap.size() && heap[right].compare(heap[min]) < 0) {
+                min = right;
+            }
+
+            // do the actual comparison
+            if (min != i) {
+                positions[min] = i;
+                positions[i] = min;
+                swap(heap[i], heap[min]);
+                bubble_down(min);
+            }
+        }
+
 };
 
 // prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
@@ -205,7 +206,7 @@ auto MST_prim (CompleteGraph G, int s) {
             // find a better ay to check if w in set
             if (*S.find(w_idx) != w_idx) {
                 // TODO how to find the right vertex in the heap????
-                item w = ;
+                item w = H.heap[H.positions[w_idx]];
                 if (w.dist > G.edges[v_idx][w_idx]) {
                     w.dist = G.edges[v_idx][w_idx];
                     // prev[w] := v
