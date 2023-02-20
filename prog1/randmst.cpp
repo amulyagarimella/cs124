@@ -183,7 +183,7 @@ auto MST_prim (CompleteGraph G, int s) {
         // TODO add order to graphs?
         // pre[i] = null;
     }
-    
+    // TODO integrate to adj list 
     while (!H.empty()) {
         item v = H.pop();
         int v_idx = v.vertex;
@@ -195,25 +195,13 @@ auto MST_prim (CompleteGraph G, int s) {
                 item w = H[w_idx];
                 if (w.dist > G.edges[v_idx][w_idx]) {
                     w.dist = G.edges[v_idx][w_idx];
+                    // prev[w] := v
                 }
             }
         }
 
-        H.pop();
-
-        /*if (S[u]) {
-            continue;
-        }*/
-
+        H.pop(); // Do we do this actually tho? i feel like this would pop second smallest so maybe not ideal
     }
-
-        // S := S∪ {v}
-        // for (v,w) ∈ E and w ∈ V(G) \ S do
-        // if dist[w] > length(v,w)
-        // dist[w] := length(v,w), prev[w] := v, insert(w,dist[w],H)
-        // fi
-        // rof
-        // end while end Prim
 };
 
 float MST_krusk (vector<float> point1, vector<float> point2) {
