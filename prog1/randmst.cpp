@@ -121,6 +121,8 @@ class PriorityQueue {
 
         // do the actual comparison
         if (min != i) {
+            positions[min] = i;
+            positions[i] = min;
             swap(heap[i], heap[min]);
             bubble_down(min);
         }
@@ -136,10 +138,18 @@ class PriorityQueue {
     }
     
     public:
+        // TODO maybe make long
+        vector<int> positions;
+
+        void set_size (int n) {
+            positions.resize(n);
+        }
+
         void push(int v, int d) {
             value.vertex = v;
             value.dist = d;
             heap.push_back(value);
+            positions[v] = heap.size() - 1;
             print_heap();
             bubble_up(heap.size() - 1);
             print_heap();
@@ -152,12 +162,15 @@ class PriorityQueue {
         item pop() {
             item popped = heap[0];
             heap[0] = heap.back();
+            positions[popped.vertex] = NULL;
             heap.pop_back();
             bubble_down(0);
             return popped;
         }
 
         bool empty() const {
+            // set all to NULL
+            positions.empty();
             return heap.empty();
         }
 };
