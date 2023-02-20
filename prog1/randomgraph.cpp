@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <tuple>
 #include <stdlib.h> 
 #include <vector>
 using namespace std;
@@ -10,6 +9,7 @@ using namespace std;
 
 struct CompleteGraph {
     // do we want nodes as int or float? am leaning int but do we need float for math reasons
+    // we need floats since the values are in [0,1]
     vector<vector<float> > nodes;
     vector<vector<float> > edges;
 };

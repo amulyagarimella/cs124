@@ -6,7 +6,7 @@
 #include <vector>
 #include <set>
 // this is supposed to make completegraph a global struct
-// #include "mystruct.h"
+#include "randomgraph.h"
 using namespace std;
 
 // Programming problem set 1
@@ -164,7 +164,7 @@ class PriorityQueue {
 
 // prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
 
-/* auto MST_prim (CompleteGraph G, int s) {
+auto MST_prim (CompleteGraph G, int s) {
     vector<float> dist[G.nodes.size()];
     vector<int> pre[G.nodes.size()];
     // CompleteGraph ans;
@@ -202,8 +202,6 @@ class PriorityQueue {
         // rof
         // end while end Prim
 };
-
-*/
 
 float MST_krusk (vector<float> point1, vector<float> point2) {
 
