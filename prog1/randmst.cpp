@@ -5,9 +5,10 @@
 #include <stdlib.h> 
 #include <vector>
 #include <set>
-// this is supposed to make completegraph a global struct
 #include "randomgraph.h"
 using namespace std;
+
+// TODO (low priority) place priorityqueue, vertex, and item into separate file
 
 // Programming problem set 1
 // Nadine Han + Amulya Garimella
@@ -54,10 +55,13 @@ the Euclidean distance between its endpoints.
 // };
 // I think MST should be different - we should NOT store MST edges in an adjacency MATRIX
 
+// do we use this struct anywhere?
+/*
 struct vertex {
     int key;
     int parent_ptr;
 };
+*/
 
 // prioqueue w/ special item element - must manually implement as per pset specs
 // structure is {s : 0} where s is the vertex and 0 is dist
@@ -205,10 +209,10 @@ auto MST_prim (CompleteGraph G, int s) {
         for (int w_idx = 0; w_idx < G.nodes.size() && w_idx != v_idx; ++w_idx) {
             // find a better ay to check if w in set
             if (*S.find(w_idx) != w_idx) {
-                // TODO how to find the right vertex in the heap????
                 item w = H.heap[H.positions[w_idx]];
-                if (w.dist > G.edges[v_idx][w_idx]) {
-                    w.dist = G.edges[v_idx][w_idx];
+                float edgeWeight = euclideanDistance(G.nodes[v_idx], G.nodes[w_idx]);
+                if (w.dist > edgeWeight) {
+                    w.dist = edgeWeight;
                     // prev[w] := v
                 }
             }

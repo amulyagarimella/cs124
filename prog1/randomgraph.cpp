@@ -8,7 +8,6 @@ struct CompleteGraph {
     // do we want nodes as int or float? am leaning int but do we need float for math reasons
     // we need floats since the values are in [0,1]
     vector<vector<float> > nodes;
-    vector<vector<float> > edges;
 };
 
 
@@ -34,18 +33,6 @@ CompleteGraph generateGraph (int n, int dim) {
         for (int j = 0; j < dim; ++j) {
             float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
             G.nodes[i].push_back(r);
-        }
-    }
-    // pairwise edge weights
-    G.edges.resize(n);
-    for (int i = 0; i < n; ++i) {
-        G.edges[i].resize(n); 
-        
-        // need to resize since pushing only will lead to off-by-one (since no self edges)
-        for (int j = i + 1; j < n; ++j) {
-            float weight = euclideanDistance(G.nodes[i], G.nodes[j]);
-            G.nodes[i][j] = weight;
-            G.nodes[j][i] = weight;
         }
     }
     return G;
