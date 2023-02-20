@@ -27,6 +27,7 @@ float euclideanDistance (vector<float> point1, vector<float> point2) {
 
 // TODO: test, add debug
 // template <int n, int dim>
+// TODO figure out dim0/dim1 case @Amulya
 CompleteGraph generateGraph (int n, int dim) {
     srand (time(NULL));
 
@@ -42,7 +43,9 @@ CompleteGraph generateGraph (int n, int dim) {
     // pairwise edge weights
     G.edges.resize(n);
     for (int i = 0; i < n; ++i) {
-        G.edges[i].resize(n); //need to resize since pushing only will lead to off-by-one (since no self edges)
+        G.edges[i].resize(n); 
+        
+        // need to resize since pushing only will lead to off-by-one (since no self edges)
         for (int j = i + 1; j < n; ++j) {
             float weight = euclideanDistance(G.nodes[i], G.nodes[j]);
             G.nodes[i][j] = weight;

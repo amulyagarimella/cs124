@@ -6,7 +6,7 @@
 #include <vector>
 #include <set>
 // this is supposed to make completegraph a global struct
-#include "mystruct.h"
+// #include "mystruct.h"
 using namespace std;
 
 // Programming problem set 1
@@ -20,6 +20,7 @@ complete if all n-choose-2 pairs of vertices are edges in the graph
 
 i believe adj should work? i don't see why not as long as we get the right results
 since we are accessing this matrix a lot it might make more sense than a linked list
+Yes and we don't waste that much space because fully connected.
 
 DIM 0: Complete graphs on n vertices, where the weight of each edge is a real
 number chosen uniformly at random on [0, 1].
@@ -40,6 +41,7 @@ the Euclidean distance between its endpoints.
 // for denser graphs (higher dimensions) we should use prim, for less we should use krus 
 // also if edges happen to be sorted we should mayb use kruskal
 // i think this means we might want to implement both and apply them depending on the dims? lmk what u think
+// Bigly agree
 
 // TODO: MST function
 // store potential edges to add in min heap
@@ -50,6 +52,7 @@ the Euclidean distance between its endpoints.
 //     vector<vector<float> > nodes;
 //     vector<vector<float> > edges;
 // };
+// I think MST should be different - we should NOT store MST edges in an adjacency MATRIX
 
 struct vertex {
     int key;
@@ -60,10 +63,29 @@ struct vertex {
 // structure is {s : 0} where s is the vertex and 0 is dist
 // see sect 2 notes for pseudo: https://drive.google.com/file/d/1yg2569DDp1bDsvtCP0y-BRntkAG6hndr/view
 
-struct item {
+// item should refer to the index of the node imo
+class item {
     // should pt to the vertex not store it b/c unnecessary space probs
-    int vertex;
-    int dist;
+    public:
+
+        int vertex;
+        int dist;
+
+        int compare (item item2) {
+            if (dist == item2.dist) {
+                return 0;
+            }
+            else if (dist < item2.dist) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        };
+
+        void print() {
+            cout << "(vertex " << vertex << ", dist " << dist << ")";
+        }
 };
 
 class PriorityQueue {
@@ -77,7 +99,7 @@ class PriorityQueue {
 
         int parent = (i - 1) / 2;
 
-        if (heap[i] > heap[parent]) {
+        if (heap[i].compare(heap[parent]) < 0) {
             swap(heap[i], heap[parent]);
             bubble_up(parent);
         }
@@ -86,40 +108,53 @@ class PriorityQueue {
     void bubble_down(int i) {
         int left = 2 * i + 1;
         int right = 2 * i + 2;
-        int largest = i;
+        int min = i;
 
         // get the largest child
-        if (left < heap.size() && heap[left] > heap[largest]) {
-            largest = left;
+        if (left < heap.size() && heap[left].compare(heap[min]) < 0) {
+            min = left;
         }
 
-        if (right < heap.size() && heap[right] > heap[largest]) {
-            largest = right;
+        if (right < heap.size() && heap[right].compare(heap[min]) < 0) {
+            min = right;
         }
 
         // do the actual comparison
-        if (largest != i) {
-            swap(heap[i], heap[largest]);
-            bubble_down(largest);
+        if (min != i) {
+            swap(heap[i], heap[min]);
+            bubble_down(min);
         }
     }
 
+    // debugging purpose
+    void print_heap() {
+        cout << "[";
+        for (int i = 0; i < heap.size(); ++i) {
+            heap[i].print();
+        }
+        cout << "]\n";
+    }
+    
     public:
         void push(int v, int d) {
             value.vertex = v;
             value.dist = d;
             heap.push_back(value);
+            print_heap();
             bubble_up(heap.size() - 1);
+            print_heap();
         }
 
-        int top() {
+        item top() {
             return heap[0];
         }
 
-        void pop() {
+        item pop() {
+            item popped = heap[0];
             heap[0] = heap.back();
             heap.pop_back();
             bubble_down(0);
+            return popped;
         }
 
         bool empty() const {
@@ -128,20 +163,22 @@ class PriorityQueue {
 };
 
 // prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
-auto MST_prim (CompleteGraph G, int s) {
+
+/* auto MST_prim (CompleteGraph G, int s) {
     vector<float> dist[G.nodes.size()];
     vector<int> pre[G.nodes.size()];
-    CompleteGraph ans;
+    // CompleteGraph ans;
 
     // pseudo said use set for this one
     set<bool> S;
 
     PriorityQueue H;
     // push source node
-    H.push(s, 0);
+    H.push(G.nodes[s], 0);
 
     for (int i = 0; i < G.nodes.size(); ++i) {
         // replacing infty with int_max! lmk if u disagree tho
+        // 
         dist[i] = INT_MAX;
         pre[i] = null;
     }
@@ -149,12 +186,13 @@ auto MST_prim (CompleteGraph G, int s) {
     while !H.empty():
         int v = H.top().second;
         int w = H.top().first;
-        pq.pop();
+        H.pop();
 
         if (S[u]) {
             continue;
         }
 
+        //  v = 
         // v := deletemin(h)
         // S := S∪ {v}
         // for (v,w) ∈ E and w ∈ V(G) \ S do
@@ -163,10 +201,26 @@ auto MST_prim (CompleteGraph G, int s) {
         // fi
         // rof
         // end while end Prim
-}
+};
+
+*/
 
 float MST_krusk (vector<float> point1, vector<float> point2) {
 
-}
+} 
+
 
 // TODO: return average MST edge weight
+
+int main() {
+    PriorityQueue h;
+    h.push(1, 0);
+    h.push(2, 0);
+    h.push(3, -1);
+    h.push(4, 5);
+    h.pop();
+    h.pop();
+    h.pop();
+    h.pop();
+    return 0;
+}
