@@ -170,30 +170,43 @@ auto MST_prim (CompleteGraph G, int s) {
     // CompleteGraph ans;
 
     // pseudo said use set for this one
-    set<bool> S;
+    set<int8_t> S;
+    //
 
     PriorityQueue H;
     // push source node
-    H.push(G.nodes[s], 0);
+    H.push(s, 0);
 
     for (int i = 0; i < G.nodes.size(); ++i) {
         // replacing infty with int_max! lmk if u disagree tho
-        // 
-        dist[i] = INT_MAX;
-        pre[i] = null;
+        H.push(i, INT_MAX);
+        // TODO add order to graphs?
+        // pre[i] = null;
     }
-    dist[s] = 0;
-    while !H.empty():
-        int v = H.top().second;
-        int w = H.top().first;
-        H.pop();
-
-        if (S[u]) {
-            continue;
+    
+    while (!H.empty()) {
+        item v = H.pop();
+        int v_idx = v.vertex;
+        S.insert(v.vertex);
+        for (int w_idx = 0; w_idx < G.nodes.size() && w_idx != v_idx; ++w_idx) {
+            // find a better ay to check if w in set
+            if (*S.find(w_idx) != w_idx) {
+                // TODO how to find the right vertex in the heap????
+                item w = H[w_idx];
+                if (w.dist > G.edges[v_idx][w_idx]) {
+                    w.dist = G.edges[v_idx][w_idx];
+                }
+            }
         }
 
-        //  v = 
-        // v := deletemin(h)
+        H.pop();
+
+        /*if (S[u]) {
+            continue;
+        }*/
+
+    }
+
         // S := S∪ {v}
         // for (v,w) ∈ E and w ∈ V(G) \ S do
         // if dist[w] > length(v,w)
