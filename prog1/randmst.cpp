@@ -5,7 +5,12 @@
 #include <stdlib.h> 
 #include <vector>
 #include <set>
+#include <iostream>
+#include <unordered_map>
 #include "randomgraph.h"
+// #include "randmst.h"
+
+// #include "randomgraph.cpp"
 using namespace std;
 
 // TODO (low priority) place priorityqueue, vertex, and item into separate file
@@ -67,13 +72,15 @@ struct vertex {
 // structure is {s : 0} where s is the vertex and 0 is dist
 // see sect 2 notes for pseudo: https://drive.google.com/file/d/1yg2569DDp1bDsvtCP0y-BRntkAG6hndr/view
 
-// item should refer to the index of the node imo
+// item.vertex should refer to the index of the node imo
 class item {
     // should pt to the vertex not store it b/c unnecessary space probs
     public:
 
         int vertex;
         int dist;
+        // TODO replace with parent POINTER
+        int parentVertex;
 
         int compare (item item2) {
             if (dist == item2.dist) {
@@ -130,7 +137,7 @@ class PriorityQueue {
         item pop() {
             item popped = heap[0];
             heap[0] = heap.back();
-            positions[popped.vertex] = NULL;
+            positions[popped.vertex] = -1;
             heap.pop_back();
             bubble_down(0);
             return popped;
@@ -182,50 +189,63 @@ class PriorityQueue {
 
 // prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
 
-auto MST_prim (CompleteGraph G, int s) {
-    vector<float> dist[G.nodes.size()];
-    vector<int> pre[G.nodes.size()];
-    // CompleteGraph ans;
+// todo - inner vector of ints or of items?
+struct MST {
+    vector <vector<int> > adjList;
+};
+
+MST MST_prim (vector<vector<float> > G, int s) {
+    vector<float> dist[G.size()];
+    vector<int> pre[G.size()];
+    MST ans;
 
     // pseudo said use set for this one
-    set<int8_t> S;
-    //
+    // Amulya used unorderd map to decrease lookup time
+    // a little redundant to store items at ints because item.vertex is redundant
+    unordered_map<int, item> visited;
 
     PriorityQueue H;
-    // push source node
     H.push(s, 0);
+    visited[s] = H.heap[0];
 
-    for (int i = 0; i < G.nodes.size(); ++i) {
-        // replacing infty with int_max! lmk if u disagree tho
+    for (int i = 0; i < G.size(); ++i) {
+        // replacing infty with int_max! lmk if u disagree tho - idk how this will interact with float, but we'll see
         H.push(i, INT_MAX);
-        // TODO add order to graphs?
+        // TODO add order to graphs? do we need this?
         // pre[i] = null;
     }
-    // TODO integrate to adj list 
     while (!H.empty()) {
+        
         item v = H.pop();
+        visited[v.vertex] = v;
         int v_idx = v.vertex;
-        S.insert(v.vertex);
-        for (int w_idx = 0; w_idx < G.nodes.size() && w_idx != v_idx; ++w_idx) {
+        for (int w_idx = 0; w_idx < G.size() && w_idx != v_idx; ++w_idx) {
             // find a better ay to check if w in set
-            if (*S.find(w_idx) != w_idx) {
-                item w = H.heap[H.positions[w_idx]];
-                float edgeWeight = euclideanDistance(G.nodes[v_idx], G.nodes[w_idx]);
+            item w = H.heap[H.positions[w_idx]];
+            if (visited.find(w_idx) != visited.end()) {
+                float edgeWeight = euclideanDistance(G[v_idx], G[w_idx]);
                 if (w.dist > edgeWeight) {
                     w.dist = edgeWeight;
-                    // prev[w] := v
+                    w.parentVertex = v_idx;
                 }
             }
         }
 
-        H.pop(); // Do we do this actually tho? i feel like this would pop second smallest so maybe not ideal
+        // H.pop(); // Do we do this actually tho? i feel like this would pop second smallest so maybe not ideal
     }
+    // add to MST
+    for (auto x : visited) {
+        // todo edge weight calc
+        ans.adjList[x.second.parentVertex].push_back(x.first);
+    }
+
+    return ans;
 };
 
+/*
 float MST_krusk (vector<float> point1, vector<float> point2) {
-
 } 
-
+*/
 
 // TODO: return average MST edge weight
 
