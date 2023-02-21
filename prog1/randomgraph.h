@@ -3,9 +3,11 @@
 #include <stdlib.h> 
 #include <vector>
 
-namespace std {
-    // TODO: what to do with overflow? -> prob unlikely bc small #s
-    float euclideanDistance (vector<float> point1, vector<float> point2);
-    vector<vector<float> > generateGraph (int n, int dim);
-}
+#ifndef FUNCTIONS_H_INCLUDED
+#define FUNCTIONS_H_INCLUDED
 
+// TODO: what to do with overflow? -> prob unlikely bc small #s
+float euclideanDistance (std::vector<float> point1, std::vector<float> point2);
+std::vector<std::vector<float> > generateGraph (int n, int dim);
+
+#endif

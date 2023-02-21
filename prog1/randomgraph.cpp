@@ -2,7 +2,7 @@
 #include <cmath>
 #include <stdlib.h> 
 #include <vector>
-#include "randomgraph.h"
+
 using namespace std;
 
 // TODO: what to do with overflow? -> prob unlikely bc small #s
@@ -18,6 +18,10 @@ float euclideanDistance (vector<float> point1, vector<float> point2) {
 // template <int n, int dim>
 // TODO figure out dim0/dim1 case @Amulya
 vector<vector<float> > generateGraph (int n, int dim) {
+    if (dim == 0) {
+        dim = 1;
+    };
+    
     srand (time(NULL));
 
     // initialize nodes

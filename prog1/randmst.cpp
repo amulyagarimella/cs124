@@ -8,11 +8,9 @@
 #include <iostream>
 #include <unordered_map>
 #include "randomgraph.h"
-// #include "randmst.h"
 
 // #include "randomgraph.cpp"
 using namespace std;
-
 // TODO (low priority) place priorityqueue, vertex, and item into separate file
 
 // Programming problem set 1
@@ -190,14 +188,15 @@ class PriorityQueue {
 // prim's - see lecture 6 pseudocode: https://drive.google.com/file/d/1ZZUqY1_7V940y8N7-E3wuJTyUqiXPu80/view
 
 // todo - inner vector of ints or of items?
+/*
 struct MST {
     vector <vector<int> > adjList;
 };
+*/
 
-MST MST_prim (vector<vector<float> > G, int s) {
+float MST_prim (vector<vector<float> > G, int s) {
     vector<float> dist[G.size()];
     vector<int> pre[G.size()];
-    MST ans;
 
     // pseudo said use set for this one
     // Amulya used unorderd map to decrease lookup time
@@ -215,12 +214,10 @@ MST MST_prim (vector<vector<float> > G, int s) {
         // pre[i] = null;
     }
     while (!H.empty()) {
-        
         item v = H.pop();
         visited[v.vertex] = v;
         int v_idx = v.vertex;
         for (int w_idx = 0; w_idx < G.size() && w_idx != v_idx; ++w_idx) {
-            // find a better ay to check if w in set
             item w = H.heap[H.positions[w_idx]];
             if (visited.find(w_idx) != visited.end()) {
                 float edgeWeight = euclideanDistance(G[v_idx], G[w_idx]);
@@ -231,33 +228,30 @@ MST MST_prim (vector<vector<float> > G, int s) {
             }
         }
 
-        // H.pop(); // Do we do this actually tho? i feel like this would pop second smallest so maybe not ideal
     }
     // add to MST
+    int sum = 0;
+    int numEdges = 0;
     for (auto x : visited) {
         // todo edge weight calc
-        ans.adjList[x.second.parentVertex].push_back(x.first);
+        // ans.adjList[x.second.parentVertex].push_back(x.first);
+        sum += euclideanDistance(G[x.first], G[x.second.parentVertex]);
+        ++numEdges;
     }
-
-    return ans;
+    return sum / numEdges;
+    // return ans;
 };
 
-/*
 float MST_krusk (vector<float> point1, vector<float> point2) {
 } 
-*/
 
-// TODO: return average MST edge weight
+
 
 int main() {
-    PriorityQueue h;
-    h.push(1, 0);
-    h.push(2, 0);
-    h.push(3, -1);
-    h.push(4, 5);
-    h.pop();
-    h.pop();
-    h.pop();
-    h.pop();
+    cout << "hello";
+    vector<vector<float> > G = generateGraph(2,2);
+    cout << "hello";
+    int s = 0;
+    cout << MST_prim (G, s);
     return 0;
-}
+};
