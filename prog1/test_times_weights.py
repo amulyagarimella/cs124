@@ -4,7 +4,7 @@ import subprocess
 
 names = ["dim", "size", "total MST weight", "avg edge weight", "max edge weight", "MST size", "duration (s)"]
 times = pd.DataFrame(columns=names)
-size = 2
+size = 1024.0
 ntrials = 1
 while (size < 262144):
     for dim in [0,2,3,4]:
