@@ -301,9 +301,12 @@ class UnionFind {
         
 };
 
-vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
+// vector -> forward list
+vector<float> MST_krusk (int dim, int s) {
     vector<edge> edges;
+    edges.reserve(s*s);
     vector<edge> MST;
+    MST.reserve(s-1);
     srand (time(NULL));
     /*int s = G.size();
     if (s == 0) {
@@ -314,6 +317,7 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
     if (s != 0) {
         for (int i = 0; i < s; ++i) {
             vector<float> p1;
+            p1.reserve(dim);
             for (int j = 0; j < dim; ++j) {
                 float r1 = ((float) rand() / (RAND_MAX));
                 p1.push_back(r1);
@@ -324,6 +328,7 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
                 };
                 if (dim > 0) {
                     vector<float> p2;
+                    p2.reserve(dim);
                     for (int j = 0; j < dim; ++j) {
                         float r1 = ((float) rand() / (RAND_MAX));
                         p2.push_back(r1);
@@ -338,10 +343,10 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
                 if (temp.weight < (log2(s) + 1)/10) {
                     temp.parentVertex = i;
                     temp.childVertex = j;
-                    edges.insert(edges.begin(), temp);
+                    edges.push_back(temp);
                     temp.parentVertex = j;
                     temp.childVertex = i;
-                    edges.insert(edges.begin(), temp);
+                    edges.push_back(temp);
                 }
                 
             }
@@ -357,7 +362,6 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
     // }
 
     // 2: sort edge weights in inc order
-    
     sort(edges.begin(), edges.end(), compareEdges);
     
     //  return {1};
@@ -365,17 +369,26 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
     UnionFind u;
     
     u.makeSet(s);
+    float sum = 0;
+    float maxWeight = 0;
     for (int i = 0; i < edges.size(); ++ i) {
         edge e = edges[i];
         int v = e.parentVertex;
         int w = e.childVertex;
         if (u.find(v) != u.find(w)) {
-            MST.insert(MST.begin(), e);
-			u.unite(v,w);
+            float weight = e.weight;
+            MST.push_back(e);
+            sum += weight;
+            if (weight > maxWeight) {
+                maxWeight = weight;
+            }
+            u.unite(v,w);
         }
         // skip other pair if we added the first pair
-        if (v < w) {
-            ++i;
+        if (i != edges.size()) {
+            if (v == edges[i+1].childVertex && w == edges[i+1].parentVertex) {
+                ++i;
+            }
         }
     }
 
@@ -387,17 +400,8 @@ vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
     //     cout << "\n";
     // }
 
-    float sum = 0;
-    float max = 0;
-    for (edge e : MST) {
-        float w = e.weight;
-        sum += w;
-        if (w > max) {
-            max = w;
-        }
-    }
     // TODO find max edge
-    return {sum, sum/MST.size(), max};
+    return {sum, sum/MST.size(), maxWeight};
 } 
 
 
