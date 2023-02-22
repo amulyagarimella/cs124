@@ -18,9 +18,6 @@ float euclideanDistance (vector<float> point1, vector<float> point2) {
 // template <int n, int dim>
 // TODO figure out dim0/dim1 case @Amulya
 vector<vector<float> > generateGraph (int n, int dim) {
-    if (dim == 0) {
-        dim = 1;
-    };
     
     srand (time(NULL));
 
@@ -29,9 +26,21 @@ vector<vector<float> > generateGraph (int n, int dim) {
     G.resize(n);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < dim; ++j) {
-            float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+            float r = ((float) rand() / (RAND_MAX));
             G[i].push_back(r);
         }
     }
     return G;
+}
+
+int main () {
+    vector<vector<float> > test;
+    test = generateGraph(3, 2);
+    for (int i = 0; i < test.size(); ++i) {
+        for (int j = 0; j < test[i].size(); ++j) {
+            cout << test[i][j] << ' '; 
+        }
+        cout << "\n";
+    }
+    return 0;
 }

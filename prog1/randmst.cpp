@@ -7,6 +7,7 @@
 #include <set>
 #include <iostream>
 #include <unordered_map>
+#include <algorithm>
 #include "randomgraph.h"
 
 // #include "randomgraph.cpp"
@@ -204,6 +205,7 @@ float MST_prim (vector<vector<float> > G, int s) {
     unordered_map<int, item> visited;
 
     PriorityQueue H;
+    H.set_size(G.size());
     H.push(s, 0);
     visited[s] = H.heap[0];
 
@@ -242,16 +244,114 @@ float MST_prim (vector<vector<float> > G, int s) {
     // return ans;
 };
 
-float MST_krusk (vector<float> point1, vector<float> point2) {
+class edge {
+    public:
+        int parentVertex;
+        int childVertex;
+        float weight;
+};
+
+int compareEdges (edge c1, edge c2) {
+    if (c1.weight == c2.weight) {
+        return 0;
+    }
+    else if (c1.weight > c2.weight) {
+        return 1;
+    }
+    return -1;
+}
+
+class UnionFind {
+    public:
+        vector<int> parent;
+        vector<int> rank;
+        void makeSet (vector<vector<float> > G) {
+            parent.resize(G.size());
+            rank.resize(G.size(), 0);
+            
+            for (int i = 0; i < G.size(); ++i) {
+                parent[i] = i;
+            }
+        }
+
+        int find (int v) {
+            if (parent[v] != v) {
+                parent[v] = find(parent[v]);
+                return parent[v];
+            }
+            return v;
+        }
+        
+        void link (int x, int y) {
+            if (rank[x] > rank[y]) {
+                swap(x,y);
+            }
+            if (rank[x] == rank[y]) {
+                rank[y] += 1;
+            }
+            parent[x] = y;
+        }
+
+
+        void unite (int x, int y) {
+            link(find(x), find(y));
+        }
+        
+};
+
+float MST_krusk (vector<vector<float> > G) {
+    // need to add dim = 0 case where u copy over G TODO
+    vector<edge> edges;
+    vector<edge> MST;
+    
+    // 1: calc and store edge weights of given graph if not dim 0
+    if (G.size() != 0) {
+        edge temp;
+
+        for (int i = 0; i < G.size(); ++i) {
+            for (int j = 0; j < G.size(); ++j) {
+                if (i == j) { 
+                    continue;
+                };
+                temp.parentVertex = i;
+                temp.childVertex = j;
+                temp.weight = euclideanDistance(G[i], G[j]);
+                edges.insert(edges.begin(), temp);
+            }
+        }
+    }
+
+    // 2: sort edge weights in inc order
+    vector<edge> sortedEdges;
+    sort(edges.begin(), edges.end(), compareEdges);
+     
+    sortedEdges.resize(edges.size());
+
+    // 3: iterate through edges
+    UnionFind u;
+    
+    u.makeSet(G);
+    for (int i = 0; i < sortedEdges.size(); ++ i) {
+        edge e = sortedEdges[i];
+        int v = e.parentVertex;
+        int w = e.childVertex;
+        if (u.find(v) != u.find(w)) {
+            MST.insert(MST.begin(), e);
+			u.unite(v,w);
+        }
+    }
+
+    int sum = 0;
+    for (edge e : MST) {
+        sum += e.weight;
+    }
+    return sum / MST.size();
 } 
 
 
-
 int main() {
-    cout << "hello";
     vector<vector<float> > G = generateGraph(2,2);
-    cout << "hello";
     int s = 0;
-    cout << MST_prim (G, s);
+    cout << MST_krusk (G);
     return 0;
 };
