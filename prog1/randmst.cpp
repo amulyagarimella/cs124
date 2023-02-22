@@ -438,4 +438,7 @@ optimizations
 
 makefile
 - will o3 mess it up? o3 works for me
+
+etc.
+- command line interface to comply with guidelines
 */
