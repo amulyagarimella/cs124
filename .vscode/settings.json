@@ -63,6 +63,8 @@
         "type_traits": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "numbers": "cpp",
+        "deque": "cpp"
     }
 }

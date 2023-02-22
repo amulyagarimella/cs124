@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <climits>
+#include <math.h>
 #include "test.h"
 
 // #include "randomgraph.cpp"
@@ -254,10 +255,7 @@ class edge {
 };
 
 bool compareEdges (edge c1, edge c2) {
-    if (c1.weight == c2.weight) {
-        return false;
-    }
-    else if (c1.weight > c2.weight) {
+    if (c1.weight < c2.weight) {
         return true;
     }
     return false;
@@ -303,11 +301,14 @@ class UnionFind {
         
 };
 
-vector<float> MST_krusk (int dim, int s) {
+vector<float> MST_krusk (int dim, int s, vector <vector<float> > G = {}) {
     vector<edge> edges;
     vector<edge> MST;
     srand (time(NULL));
-    
+    /*int s = G.size();
+    if (s == 0) {
+        s = size;
+    }*/
     edge temp;
     // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
     if (s != 0) {
@@ -321,8 +322,6 @@ vector<float> MST_krusk (int dim, int s) {
                 if (i == j) { 
                     continue;
                 };
-                temp.parentVertex = i;
-                temp.childVertex = j;
                 if (dim > 0) {
                     vector<float> p2;
                     for (int j = 0; j < dim; ++j) {
@@ -335,10 +334,16 @@ vector<float> MST_krusk (int dim, int s) {
                 else {
                     temp.weight = (float) rand() / (RAND_MAX);
                 }
-                edges.insert(edges.begin(), temp);
-                temp.parentVertex = j;
-                temp.childVertex = i;
-                edges.insert(edges.begin(), temp);
+                // pruning (first pass attempt)
+                if (temp.weight < (log2(s) + 1)/10) {
+                    temp.parentVertex = i;
+                    temp.childVertex = j;
+                    edges.insert(edges.begin(), temp);
+                    temp.parentVertex = j;
+                    temp.childVertex = i;
+                    edges.insert(edges.begin(), temp);
+                }
+                
             }
         }
     }
@@ -352,8 +357,10 @@ vector<float> MST_krusk (int dim, int s) {
     // }
 
     // 2: sort edge weights in inc order
+    
     sort(edges.begin(), edges.end(), compareEdges);
-
+    
+    //  return {1};
     // 3: iterate through edges
     UnionFind u;
     
@@ -366,6 +373,10 @@ vector<float> MST_krusk (int dim, int s) {
             MST.insert(MST.begin(), e);
 			u.unite(v,w);
         }
+        // skip other pair if we added the first pair
+        if (v < w) {
+            ++i;
+        }
     }
 
     // print MST
@@ -377,10 +388,16 @@ vector<float> MST_krusk (int dim, int s) {
     // }
 
     float sum = 0;
+    float max = 0;
     for (edge e : MST) {
-        sum += e.weight;
+        float w = e.weight;
+        sum += w;
+        if (w > max) {
+            max = w;
+        }
     }
-    return {sum, sum/MST.size()};
+    // TODO find max edge
+    return {sum, sum/MST.size(), max};
 } 
 
 
@@ -391,9 +408,9 @@ int main(int argc, char* argv[]) {
     /*cout << dim << "\n";
     cout << n << "\n";
     cout << ntrials << "\n";*/
-
+    vector<float> res = MST_krusk (0, n);
     for (int i = 0; i < ntrials; ++i) {
-        cout << MST_krusk (0, n)[0] << "," << MST_krusk (0, n)[1] << "\n";
+        cout << res[0] << "," << res[1] <<  "," << res[2] << "\n";
     }
     return 0;
 };
@@ -401,12 +418,13 @@ int main(int argc, char* argv[]) {
 
 
 /* TODO
-- check to make sure it accts for cycles
+- check to make sure it accts for cycles <- i dont rlly understand this. There are going to be cycles in this graph bc all graphs we are considering are complete and undirected
+
 - add edge pruning from hint: 
-    - strategy from andrew is do a bunch of test graph inputs in increasing size
     - then graph the weights of all of the maximum edges in those examples (using python or sumn probs)
     - find a line of best fit to determine the trend of the weights relative to size
     - take that function and double it (so that the edges we prune aren't too close to normal weights and will only catch OUTLIERS)
+    - return exception if we cannot create MST
 
 - check for more optimizations (path compression, union by rank,
 
@@ -415,18 +433,30 @@ int main(int argc, char* argv[]) {
 
 /* DONE - Amulya
 key functionality
-- works on 0 graphs
+- works on 0dim graphs
 - remove graph generation functionality - now generate vertices on the fly to save space + time ~ remaining TODO = code cleanup
 
 edge pruning
 - wrote python script to test
+    - strategy from andrew is do a bunch of test graph inputs in increasing size
+- added tenative pruning
 
 optimizations
 - also did we repeat the edges??? in our calc of those) -> cut forloop in half
+- I think we alr do the union by rank and path compression
 
 makefile
 - will o3 mess it up? o3 works for me
 
 etc.
 - command line interface to comply with guidelines
+
+WRITEUP
+part 1
+- code to generate table with sizes and total weights is complete
+- my function guess is 
+
+part 2 
+- 
+
 */
