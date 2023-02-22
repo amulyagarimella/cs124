@@ -383,6 +383,9 @@ vector<float> MST_krusk (int dim, int s) {
                 maxWeight = weight;
             }
             u.unite(v,w);
+            if (MST.size() == s - 1) {
+                break;
+            }
         }
         // skip other pair if we added the first pair
         if (i != edges.size()) {
