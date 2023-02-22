@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-weights_durations = pd.read_csv("weights_durations_2.csv")
+weights_durations = pd.read_csv("weights_durations_6.csv")
 # avg_over_dim = weights_durations.groupby("size").mean()
 def size_vs (y): 
     sns.lineplot(data=weights_durations, x="size", y=y, hue="dim")

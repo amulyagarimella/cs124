@@ -310,17 +310,14 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
     vector<edge> MST;
     MST.reserve(s-1);
     srand (time(NULL));
-    float prune_lim = log2(s);
-        if (s < 10000) {
-            prune_lim /= pow(10,log10(s)-1);
-        }
-        else if (s < 50000) {
-            prune_lim /= pow(10,log10(s));
-        }
-        else {
-            prune_lim /= pow(10,log10(s)) + pow(10,log10(s)-2);
-        }
-    /*int s = G.size();
+    float prune_lim = log2(s)*max(1,dim);
+    if (s < 50000) {
+        prune_lim /= pow(10,log10(s)-2);
+    }
+    else {
+        prune_lim /= pow(10,log10(s)-1);
+    }
+/*int s = G.size();
     if (s == 0) {
         s = size;
     }*/
