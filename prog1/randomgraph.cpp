@@ -5,7 +5,6 @@
 
 using namespace std;
 
-// TODO: what to do with overflow? -> prob unlikely bc small #s
 float euclideanDistance (vector<float> point1, vector<float> point2) {
     float sumDistSquared = 0;
     for (int i = 0; i < point1.size(); ++i) {
@@ -14,9 +13,6 @@ float euclideanDistance (vector<float> point1, vector<float> point2) {
     return sqrt(sumDistSquared);
 }
 
-// TODO: test, add debug
-// template <int n, int dim>
-// TODO figure out dim0/dim1 case @Amulya
 vector<vector<float> > generateGraph (int n, int dim) {
     
     srand (time(NULL));

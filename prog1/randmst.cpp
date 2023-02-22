@@ -5,9 +5,11 @@
 #include <stdlib.h> 
 #include <vector>
 #include <set>
+#include <cmath>
 #include <iostream>
 #include <unordered_map>
 #include <algorithm>
+#include <climits>
 #include "test.h"
 
 // #include "randomgraph.cpp"
@@ -194,8 +196,8 @@ struct MST {
     vector <vector<int> > adjList;
 };
 */
-
-float MST_prim (vector<vector<float> > G, int s) {
+template<typename T>
+float MST_prim (T G, int s) {
     vector<float> dist[G.size()];
     vector<int> pre[G.size()];
 
@@ -265,11 +267,13 @@ class UnionFind {
     public:
         vector<int> parent;
         vector<int> rank;
-        void makeSet (vector<vector<float> > G) {
-            parent.resize(G.size());
-            rank.resize(G.size(), 0);
+
+        // this will also work on 0 dim
+        void makeSet (int size) {
+            parent.resize(size);
+            rank.resize(size, 0);
             
-            for (int i = 0; i < G.size(); ++i) {
+            for (int i = 0; i < size; ++i) {
                 parent[i] = i;
             }
         }
@@ -299,23 +303,34 @@ class UnionFind {
         
 };
 
-float MST_krusk (vector<vector<float> > G) {
-    // need to add dim = 0 case where u copy over G TODO
+float MST_krusk (int dim, int size = 0, vector<vector<float>> G = {}) {
     vector<edge> edges;
     vector<edge> MST;
+    srand (time(NULL));
+    int s = G.size();
+    if (s == 0) {
+        s = size;
+    }
     
+    edge temp;
     // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
-    if (G.size() != 0) {
-        edge temp;
-
-        for (int i = 0; i < G.size(); ++i) {
-            for (int j = 0; j < G.size(); ++j) {
+    if (s != 0) {
+        for (int i = 0; i < s; ++i) {
+            for (int j = i + 1; j < s; ++j) {
                 if (i == j) { 
                     continue;
                 };
                 temp.parentVertex = i;
                 temp.childVertex = j;
-                temp.weight = euclideanDistance(G[i], G[j]);
+                if (dim > 0) {
+                    temp.weight = euclideanDistance(G[i], G[j]);
+                }
+                else {
+                    temp.weight = (float) rand() / (RAND_MAX);
+                }
+                edges.insert(edges.begin(), temp);
+                temp.parentVertex = j;
+                temp.childVertex = i;
                 edges.insert(edges.begin(), temp);
             }
         }
@@ -335,7 +350,7 @@ float MST_krusk (vector<vector<float> > G) {
     // 3: iterate through edges
     UnionFind u;
     
-    u.makeSet(G);
+    u.makeSet(s);
     for (int i = 0; i < edges.size(); ++ i) {
         edge e = edges[i];
         int v = e.parentVertex;
@@ -362,8 +377,13 @@ float MST_krusk (vector<vector<float> > G) {
 } 
 
 
-int main() {
-    vector<vector<float> > G = generateGraph(3,2);
+int main(int argc, char* argv[]) {
+    int n = strtol(argv[2], NULL, 10);
+    int ntrials = strtol(argv[3], NULL, 10);
+    int dim =  strtol(argv[4], NULL, 10);
+    /*cout << dim << "\n";
+    cout << n << "\n";
+    cout << ntrials << "\n";*/
     // print input graph AKA test generate graph
     // for (int i = 0; i < G.size(); ++i) {
     //     for (int j = 0; j < G[i].size(); ++j) {
@@ -371,7 +391,24 @@ int main() {
     //     }
     //     cout << "\n";
     // }
-    cout << MST_krusk (G);
+
+     /*
+        for (int i = 0; i < G.size(); ++i) {
+            for (int j = 0; j < G[i].size(); ++j) {
+                cout << G[i][j] << ' '; 
+            }
+            cout << "\n";
+        }
+        */
+    for (int i = 0; i < ntrials; ++i) {
+        if (dim > 0) {
+            vector<vector<float> > G = generateGraph(n, dim);
+            cout << "weight: " << MST_krusk (dim, n, G) << "\n";
+        }
+        else {
+            cout << "weight: " << MST_krusk (0, n) << "\n";
+        }   
+    }
     return 0;
 };
 
@@ -384,6 +421,21 @@ int main() {
     - then graph the weights of all of the maximum edges in those examples (using python or sumn probs)
     - find a line of best fit to determine the trend of the weights relative to size
     - take that function and double it (so that the edges we prune aren't too close to normal weights and will only catch OUTLIERS)
-- check for more optimizations (path compression, union by rank, also did we repeat the edges??? in our calc of those)
-- also figure out the makefile situation - will o3 mess it up? also some of the commands are preventing me from running randomgraph for permission reasons -_- idek why
+
+- check for more optimizations (path compression, union by rank,
+
+- also figure out the makefile situation ? also some of the commands are preventing me from running randomgraph for permission reasons -_- idek why
+*/
+
+/* DONE - Amulya
+key functionality
+- works on 0 graphs
+
+edge pruning
+
+optimizations
+- also did we repeat the edges??? in our calc of those) -> cut forloop in half
+
+makefile
+- will o3 mess it up? o3 works for me
 */
