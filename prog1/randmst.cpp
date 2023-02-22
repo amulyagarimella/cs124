@@ -8,7 +8,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <algorithm>
-#include "randomgraph.h"
+#include "test.h"
 
 // #include "randomgraph.cpp"
 using namespace std;
@@ -251,14 +251,14 @@ class edge {
         float weight;
 };
 
-int compareEdges (edge c1, edge c2) {
+bool compareEdges (edge c1, edge c2) {
     if (c1.weight == c2.weight) {
-        return 0;
+        return false;
     }
     else if (c1.weight > c2.weight) {
-        return 1;
+        return true;
     }
-    return -1;
+    return false;
 }
 
 class UnionFind {
@@ -304,7 +304,7 @@ float MST_krusk (vector<vector<float> > G) {
     vector<edge> edges;
     vector<edge> MST;
     
-    // 1: calc and store edge weights of given graph if not dim 0
+    // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
     if (G.size() != 0) {
         edge temp;
 
@@ -321,18 +321,23 @@ float MST_krusk (vector<vector<float> > G) {
         }
     }
 
+    // print edges
+    // for (int i = 0; i < edges.size(); ++i) {
+    //     cout << edges[i].parentVertex << ' '; 
+    //     cout << edges[i].childVertex << ' '; 
+    //     cout << edges[i].weight << ' '; 
+    //     cout << "\n";
+    // }
+
     // 2: sort edge weights in inc order
-    vector<edge> sortedEdges;
     sort(edges.begin(), edges.end(), compareEdges);
-     
-    sortedEdges.resize(edges.size());
 
     // 3: iterate through edges
     UnionFind u;
     
     u.makeSet(G);
-    for (int i = 0; i < sortedEdges.size(); ++ i) {
-        edge e = sortedEdges[i];
+    for (int i = 0; i < edges.size(); ++ i) {
+        edge e = edges[i];
         int v = e.parentVertex;
         int w = e.childVertex;
         if (u.find(v) != u.find(w)) {
@@ -341,7 +346,15 @@ float MST_krusk (vector<vector<float> > G) {
         }
     }
 
-    int sum = 0;
+    // print MST
+    // for (int i = 0; i < MST.size(); ++i) {
+    //     cout << MST[i].parentVertex << ' '; 
+    //     cout << MST[i].childVertex << ' '; 
+    //     cout << MST[i].weight << ' '; 
+    //     cout << "\n";
+    // }
+
+    float sum = 0;
     for (edge e : MST) {
         sum += e.weight;
     }
@@ -350,8 +363,27 @@ float MST_krusk (vector<vector<float> > G) {
 
 
 int main() {
-    vector<vector<float> > G = generateGraph(2,2);
-    int s = 0;
+    vector<vector<float> > G = generateGraph(3,2);
+    // print input graph AKA test generate graph
+    // for (int i = 0; i < G.size(); ++i) {
+    //     for (int j = 0; j < G[i].size(); ++j) {
+    //         cout << G[i][j] << ' '; 
+    //     }
+    //     cout << "\n";
+    // }
     cout << MST_krusk (G);
     return 0;
 };
+
+
+
+/* TODO
+- check to make sure it accts for cycles
+- add edge pruning from hint: 
+    - strategy from andrew is do a bunch of test graph inputs in increasing size
+    - then graph the weights of all of the maximum edges in those examples (using python or sumn probs)
+    - find a line of best fit to determine the trend of the weights relative to size
+    - take that function and double it (so that the edges we prune aren't too close to normal weights and will only catch OUTLIERS)
+- check for more optimizations (path compression, union by rank, also did we repeat the edges??? in our calc of those)
+- also figure out the makefile situation - will o3 mess it up? also some of the commands are preventing me from running randomgraph for permission reasons -_- idek why
+*/
