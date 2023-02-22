@@ -4,9 +4,9 @@ import subprocess
 
 names = ["dim", "size", "total MST weight", "avg edge weight", "max edge weight", "MST size", "duration (s)"]
 times = pd.DataFrame(columns=names)
-size = 65536.0
+size = 2
 ntrials = 1
-while (size < 262144):
+while (size <= 262144):
     for dim in [0,2,3,4]:
         start_time = t.time()
         output = subprocess.run(["./randmst", "0", str(size), str(ntrials), str(dim)], stdout=subprocess.PIPE)
@@ -18,4 +18,4 @@ while (size < 262144):
         print(times)
         print("\n")
     size *= 2
-    times.to_csv("weights_durations_4.csv")
+    times.to_csv("weights_durations_6.csv")

@@ -303,7 +303,8 @@ class UnionFind {
 };
 
 // vector -> forward list
-vector<float> MST_krusk (int dim, int s) {
+vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
+    int s = max(size, (int) G.size());
     vector<edge> edges;
     edges.reserve(s*s);
     vector<edge> MST;
@@ -327,25 +328,26 @@ vector<float> MST_krusk (int dim, int s) {
     // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
     if (s != 0) {
         for (int i = 0; i < s; ++i) {
-            vector<float> p1;
+            /*vector<float> p1;
             p1.reserve(dim);
             for (int j = 0; j < dim; ++j) {
                 float r1 = ((float) rand() / (RAND_MAX));
                 p1.push_back(r1);
-            };
+            };*/
             for (int j = i + 1; j < s; ++j) {
                 if (i == j) { 
                     continue;
                 };
                 if (dim > 0) {
-                    vector<float> p2;
+                    /*vector<float> p2;
                     p2.reserve(dim);
                     for (int j = 0; j < dim; ++j) {
                         float r1 = ((float) rand() / (RAND_MAX));
                         p2.push_back(r1);
                     };
-                    temp.weight = euclideanDistance(p1, p2);
+                    temp.weight = euclideanDistance(p1, p2);*/
                     // cout << "weight: " << temp.weight << "\n";
+                    temp.weight = euclideanDistance(G[i], G[j]);
                 }
                 else {
                     temp.weight = (float) rand() / (RAND_MAX);
@@ -427,7 +429,16 @@ int main(int argc, char* argv[]) {
     /*cout << dim << "\n";
     cout << n << "\n";
     cout << ntrials << "\n";*/
-    vector<float> res = MST_krusk (0, n);
+    vector<float> res;
+    res.reserve(4);
+    if (dim == 0) {
+        res = MST_krusk (0, n);
+    }
+    else {
+        vector<vector<float> > G = generateGraph(n, dim);
+        res = MST_krusk (dim, n, G);
+    }
+    
     for (int i = 0; i < ntrials; ++i) {
         cout << res[0] << "," << res[1] <<  "," << res[2] << "," << res[3] << "\n";
     }
