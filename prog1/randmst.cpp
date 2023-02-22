@@ -303,19 +303,20 @@ class UnionFind {
         
 };
 
-float MST_krusk (int dim, int size = 0, vector<vector<float>> G = {}) {
+float MST_krusk (int dim, int s) {
     vector<edge> edges;
     vector<edge> MST;
     srand (time(NULL));
-    int s = G.size();
-    if (s == 0) {
-        s = size;
-    }
     
     edge temp;
     // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
     if (s != 0) {
         for (int i = 0; i < s; ++i) {
+            vector<float> p1;
+            for (int j = 0; j < dim; ++j) {
+                float r1 = ((float) rand() / (RAND_MAX));
+                p1.push_back(r1);
+            };
             for (int j = i + 1; j < s; ++j) {
                 if (i == j) { 
                     continue;
@@ -323,7 +324,13 @@ float MST_krusk (int dim, int size = 0, vector<vector<float>> G = {}) {
                 temp.parentVertex = i;
                 temp.childVertex = j;
                 if (dim > 0) {
-                    temp.weight = euclideanDistance(G[i], G[j]);
+                    vector<float> p2;
+                    for (int j = 0; j < dim; ++j) {
+                        float r1 = ((float) rand() / (RAND_MAX));
+                        p2.push_back(r1);
+                    };
+                    temp.weight = euclideanDistance(p1, p2);
+                    // cout << "weight: " << temp.weight << "\n";
                 }
                 else {
                     temp.weight = (float) rand() / (RAND_MAX);
@@ -384,30 +391,9 @@ int main(int argc, char* argv[]) {
     /*cout << dim << "\n";
     cout << n << "\n";
     cout << ntrials << "\n";*/
-    // print input graph AKA test generate graph
-    // for (int i = 0; i < G.size(); ++i) {
-    //     for (int j = 0; j < G[i].size(); ++j) {
-    //         cout << G[i][j] << ' '; 
-    //     }
-    //     cout << "\n";
-    // }
 
-     /*
-        for (int i = 0; i < G.size(); ++i) {
-            for (int j = 0; j < G[i].size(); ++j) {
-                cout << G[i][j] << ' '; 
-            }
-            cout << "\n";
-        }
-        */
     for (int i = 0; i < ntrials; ++i) {
-        if (dim > 0) {
-            vector<vector<float> > G = generateGraph(n, dim);
-            cout << "weight: " << MST_krusk (dim, n, G) << "\n";
-        }
-        else {
-            cout << "weight: " << MST_krusk (0, n) << "\n";
-        }   
+        cout << "weight: " << MST_krusk (0, n) << "\n";
     }
     return 0;
 };
@@ -430,6 +416,7 @@ int main(int argc, char* argv[]) {
 /* DONE - Amulya
 key functionality
 - works on 0 graphs
+- remove graph generation functionality - now generate vertices on the fly to save space + time ~ remaining TODO = code cleanup
 
 edge pruning
 
