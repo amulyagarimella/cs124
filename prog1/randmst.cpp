@@ -303,7 +303,7 @@ class UnionFind {
         
 };
 
-float MST_krusk (int dim, int s) {
+vector<float> MST_krusk (int dim, int s) {
     vector<edge> edges;
     vector<edge> MST;
     srand (time(NULL));
@@ -380,7 +380,7 @@ float MST_krusk (int dim, int s) {
     for (edge e : MST) {
         sum += e.weight;
     }
-    return sum / MST.size();
+    return {sum, sum/MST.size()};
 } 
 
 
@@ -393,7 +393,7 @@ int main(int argc, char* argv[]) {
     cout << ntrials << "\n";*/
 
     for (int i = 0; i < ntrials; ++i) {
-        cout << "weight: " << MST_krusk (0, n) << "\n";
+        cout << MST_krusk (0, n)[0] << "," << MST_krusk (0, n)[1] << "\n";
     }
     return 0;
 };
@@ -419,6 +419,7 @@ key functionality
 - remove graph generation functionality - now generate vertices on the fly to save space + time ~ remaining TODO = code cleanup
 
 edge pruning
+- wrote python script to test
 
 optimizations
 - also did we repeat the edges??? in our calc of those) -> cut forloop in half
