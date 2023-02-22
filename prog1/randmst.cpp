@@ -341,7 +341,9 @@ vector<float> MST_krusk (int dim, int s) {
                     temp.weight = (float) rand() / (RAND_MAX);
                 }
                 // pruning (first pass attempt)
-                if (temp.weight < (log2(s))/1000) {
+                float prune_lim = (log2(s))/pow(10,log10(s)-1);
+                
+                if (temp.weight < prune_lim) {
                     temp.parentVertex = i;
                     temp.childVertex = j;
                     edges.push_back(temp);
