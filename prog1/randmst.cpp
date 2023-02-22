@@ -292,6 +292,7 @@ class UnionFind {
                 rank[y] += 1;
             }
             parent[x] = y;
+            rank[x] += rank[y];
         }
 
 
@@ -340,7 +341,7 @@ vector<float> MST_krusk (int dim, int s) {
                     temp.weight = (float) rand() / (RAND_MAX);
                 }
                 // pruning (first pass attempt)
-                if (temp.weight < (log2(s) + 1)/10) {
+                if (temp.weight < (log2(s))/1000) {
                     temp.parentVertex = i;
                     temp.childVertex = j;
                     edges.push_back(temp);
@@ -386,11 +387,11 @@ vector<float> MST_krusk (int dim, int s) {
             if (MST.size() == s - 1) {
                 break;
             }
-        }
-        // skip other pair if we added the first pair
-        if (i != edges.size()) {
-            if (v == edges[i+1].childVertex && w == edges[i+1].parentVertex) {
-                ++i;
+            if (i != edges.size()) {
+            // skip other pair if we added the first pair
+                if (v == edges[i+1].childVertex && w == edges[i+1].parentVertex) {
+                    ++i;
+                }
             }
         }
     }
@@ -404,7 +405,7 @@ vector<float> MST_krusk (int dim, int s) {
     // }
 
     // TODO find max edge
-    return {sum, sum/MST.size(), maxWeight};
+    return {sum, sum/MST.size(), maxWeight, (float) MST.size()};
 } 
 
 
@@ -417,7 +418,7 @@ int main(int argc, char* argv[]) {
     cout << ntrials << "\n";*/
     vector<float> res = MST_krusk (0, n);
     for (int i = 0; i < ntrials; ++i) {
-        cout << res[0] << "," << res[1] <<  "," << res[2] << "\n";
+        cout << res[0] << "," << res[1] <<  "," << res[2] << "," << res[3] << "\n";
     }
     return 0;
 };
