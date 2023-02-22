@@ -313,8 +313,11 @@ vector<float> MST_krusk (int dim, int s) {
         if (s < 10000) {
             prune_lim /= pow(10,log10(s)-1);
         }
-        else {
+        else if (s < 50000) {
             prune_lim /= pow(10,log10(s));
+        }
+        else {
+            prune_lim /= pow(10,log10(s)) + pow(10,log10(s)-2);
         }
     /*int s = G.size();
     if (s == 0) {
