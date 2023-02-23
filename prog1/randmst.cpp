@@ -267,16 +267,16 @@ class UnionFind {
         vector<int> rank;
 
         // this will also work on 0 dim
-        void makeSet (int size) {
+        void makeSet (long size) {
             parent.resize(size);
             rank.resize(size, 0);
             
-            for (int i = 0; i < size; ++i) {
+            for (long i = 0; i < size; ++i) {
                 parent[i] = i;
             }
         }
 
-        int find (int v) {
+        int find (long v) {
             if (parent[v] != v) {
                 parent[v] = find(parent[v]);
                 return parent[v];
@@ -284,7 +284,7 @@ class UnionFind {
             return v;
         }
         
-        void link (int x, int y) {
+        void link (long x, long y) {
             if (rank[x] > rank[y]) {
                 swap(x,y);
             }
@@ -296,7 +296,7 @@ class UnionFind {
         }
 
 
-        void unite (int x, int y) {
+        void unite (long x, long y) {
             link(find(x), find(y));
         }
         
@@ -306,11 +306,11 @@ class UnionFind {
 vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) {
     int s = max(size, (long) G.size());
     vector<edge> edges;
-    // cout << edges.max_size() - << "hello\n";
     edges.reserve((long) s*s);
     vector<edge> MST;
     MST.reserve((long) s-1);
     srand (time(NULL));
+    cout << "hello\n";
 
     // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
     // float prune_lim = 10.;
@@ -369,10 +369,12 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
     u.makeSet(s);
     float sum = 0;
     float maxWeight = 0;
-    for (int i = 0; i < edges.size(); ++ i) {
+    for (long i = 0; i < edges.size(); ++ i) {
+        cout << "hello\n";
         edge e = edges[i];
         int v = e.parentVertex;
         int w = e.childVertex;
+        cout << "hello\n";
         if (u.find(v) != u.find(w)) {
             float weight = e.weight;
             MST.push_back(e);
