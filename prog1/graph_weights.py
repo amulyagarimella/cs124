@@ -11,6 +11,7 @@ weights_durations = pd.read_csv("weights_durations_9.csv")
 # avg_over_dim = weights_durations.groupby("size").mean()
 for dim in [0,2,3,4]:
     sns.lineplot(data=weights_durations, x="size", y="max edge weight", hue="dim")
+    plt.xscale("log", base=2)
     wd_0 = weights_durations[weights_durations.dim==dim]
     popt, pcov = curve_fit(lambda t, a, b, c: a * np.exp(b * t) + c, wd_0.size, wd_0["max edge weight"])
     print(f"dim {dim}: {popt}")
@@ -18,11 +19,11 @@ for dim in [0,2,3,4]:
 plt.show()
 plt.clf()
 
-def size_vs(y):
+"""def size_vs(y):
     sns.lineplot(data=weights_durations, x="size", y=y, hue="dim")
     plt.show()
     plt.clf()
 
 size_vs("max edge weight")
 size_vs("total MST weight")
-size_vs("avg edge weight")
+size_vs("avg edge weight")"""

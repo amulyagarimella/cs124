@@ -313,7 +313,7 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
 
     // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
     // float prune_lim = 10.;
-    float prune_lim = exp(0.9 * s) + (5.74 * pow(10,13));
+    float prune_lim = (2.7 * pow(10,-19) * exp(0.9 * s) + 1)*2;
     // cout << prune_lim;
     /*int s = G.size();
     if (s == 0) {
