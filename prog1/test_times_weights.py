@@ -11,6 +11,7 @@ while (size <= 262144):
         start_time = t.time()
         output = subprocess.run(["./randmst", "0", str(size), str(ntrials), str(dim)], stdout=subprocess.PIPE)
         weight = output.stdout.decode('utf-8').split(",")
+        print(weight)
         duration = t.time() - start_time
         new_row = pd.DataFrame([dim, size, weight[0], weight[1], weight[2], weight[3], duration]).T
         new_row.columns = names

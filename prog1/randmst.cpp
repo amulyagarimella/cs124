@@ -303,12 +303,13 @@ class UnionFind {
 };
 
 // vector -> forward list
-vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
-    int s = max(size, (int) G.size());
+vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) {
+    int s = max(size, (long) G.size());
     vector<edge> edges;
-    edges.reserve(s*s);
+    // cout << edges.max_size() - << "hello\n";
+    edges.reserve((long) s*s);
     vector<edge> MST;
-    MST.reserve(s-1);
+    MST.reserve((long) s-1);
     srand (time(NULL));
 
     // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
@@ -407,9 +408,6 @@ int main(int argc, char* argv[]) {
     int n = strtol(argv[2], NULL, 10);
     int ntrials = strtol(argv[3], NULL, 10);
     int dim =  strtol(argv[4], NULL, 10);
-    /*cout << dim << "\n";
-    cout << n << "\n";
-    cout << ntrials << "\n";*/
     vector<float> res;
     res.reserve(4);
     if (dim == 0) {
