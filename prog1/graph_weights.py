@@ -12,10 +12,13 @@ weights_durations = pd.concat([weights_durations_1, weights_durations_2]).reset_
 
 # avg_over_dim = weights_durations.groupby("size").mean()
 for dim in [0,2,3,4]:
-    sns.lineplot(data=weights_durations, x="size", y="max edge weight", hue="dim")
-    plt.xscale("log", base=2)
     wd_0 = weights_durations[weights_durations.dim==dim]
-    popt, pcov = curve_fit(lambda t, a, b, c: a * np.exp(b * np.log2(t)) + c, wd_0.size, wd_0["max edge weight"])
+    wd_0 = weights_durations[weights_durations['size'] > 4000]
+    sns.lineplot(data=wd_0, x="size", y="max edge weight", hue="dim")
+    plt.xscale("log", base=2)
+    print(wd_0)
+    popt, pcov = curve_fit(lambda t, a, b, c: a * pow(b, np.log2(t)) + c, wd_0.size, wd_0["max edge weight"])
+    
     print(f"dim {dim}: {popt}")
 # print(pcov)
 plt.show()
