@@ -310,13 +310,13 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
     vector<edge> MST;
     MST.reserve(s-1);
     srand (time(NULL));
-    float prune_lim = log2(s)*max(1,dim);
-    if (s < 50000) {
-        prune_lim /= pow(10,log10(s)-2);
-    }
-    else {
-        prune_lim /= pow(10,log10(s)-1);
-    }
+    // float prune_lim = log2(s)*max(1,dim);
+    // if (s < 50000) {
+    //     prune_lim /= pow(10,log10(s)-2);
+    // }
+    // else {
+    //     prune_lim /= pow(10,log10(s)-1);
+    // }
 /*int s = G.size();
     if (s == 0) {
         s = size;
@@ -351,14 +351,14 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
                 }
                 // pruning (first pass attempt)
                 
-                if (temp.weight < prune_lim) {
-                    temp.parentVertex = i;
-                    temp.childVertex = j;
-                    edges.push_back(temp);
-                    temp.parentVertex = j;
-                    temp.childVertex = i;
-                    edges.push_back(temp);
-                }
+                // if (temp.weight < prune_lim) {
+                //     temp.parentVertex = i;
+                //     temp.childVertex = j;
+                //     edges.push_back(temp);
+                //     temp.parentVertex = j;
+                //     temp.childVertex = i;
+                //     edges.push_back(temp);
+                // }
                 
             }
         }
