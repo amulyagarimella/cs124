@@ -6,14 +6,14 @@ from scipy.optimize import curve_fit
 
 weights_durations_1 = pd.read_csv("weights_durations_11.csv")
 weights_durations_2 = pd.read_csv("weights_durations_12.csv")
-# weights_durations_3 = pd.read_csv("weights_durations_14.csv")
-# weights_durations_3["max edge weight"] = weights_durations_3["max edge weight"]**(1/2)
-weights_durations = pd.concat([weights_durations_1, weights_durations_2]).reset_index()
+weights_durations_3 = pd.read_csv("weights_durations_15.csv")
+weights_durations_3["max edge weight"] = weights_durations_3["max edge weight"]**(2)
+weights_durations = pd.concat([weights_durations_1, weights_durations_2, weights_durations_3]).reset_index()
 
 # avg_over_dim = weights_durations.groupby("size").mean()
 for dim in [0,2,3,4]:
     wd_0 = weights_durations[weights_durations.dim==dim]
-    wd_0 = weights_durations[weights_durations['size'] > 4000]
+    wd_0 = weights_durations[weights_durations['size'] > 128]
     sns.lineplot(data=wd_0, x="size", y="max edge weight", hue="dim")
     plt.xscale("log", base=2)
     print(wd_0)

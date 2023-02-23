@@ -4,7 +4,7 @@ import subprocess
 
 names = ["dim", "size", "total MST weight", "avg edge weight", "max edge weight", "MST size", "duration (s)"]
 times = pd.DataFrame(columns=names)
-size = 131072
+size = 65536
 ntrials = 1
 while (size <= 262144):
     for dim in [0,2,3,4]:
@@ -19,4 +19,4 @@ while (size <= 262144):
         print(times)
         print("\n")
     size *= 2
-    times.to_csv("weights_durations_14.csv")
+    times.to_csv("weights_durations_16.csv")

@@ -318,7 +318,6 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
 
     // sqrt for comparison
     float prune_lim = -1.8 * pow(0.8,log2(s)) + .76;
-    prune_lim *= prune_lim;
     //cout << prune_lim;
     /*int s = G.size();
     if (s == 0) {
@@ -379,7 +378,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
         int v = e.parentVertex;
         int w = e.childVertex;
         if (u.find(v) != u.find(w)) {
-            float weight = sqrt(e.weight);
+            float weight = e.weight;
             MST.push_back(e);
             sum += weight;
             if (weight > maxWeight) {

@@ -10,7 +10,7 @@ float euclideanDistance (vector<float> point1, vector<float> point2) {
     for (int i = 0; i < point1.size(); ++i) {
         sumDistSquared += pow(point1[i] - point2[i], 2);
     }
-    return sumDistSquared;
+    return sqrt(sumDistSquared);
 }
 
 vector<vector<float> > generateGraph (int n, int dim) {
