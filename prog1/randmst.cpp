@@ -310,56 +310,42 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
     vector<edge> MST;
     MST.reserve(s-1);
     srand (time(NULL));
-    float prune_lim = log2(s)*max(1,dim);
-    if (s < 50000) {
-        prune_lim /= pow(10,log10(s)-2);
-    }
-    else {
-        prune_lim /= pow(10,log10(s)-1);
-    }
-/*int s = G.size();
+
+    // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
+    // float prune_lim = 10.;
+    float prune_lim = exp(0.9 * s) + (5.74 * pow(10,13));
+    // cout << prune_lim;
+    /*int s = G.size();
     if (s == 0) {
         s = size;
     }*/
     edge temp;
     // 1: calc and store edge weights of given graph if not dim 0 - we might have repetition if the input will always be undirected complete
-    if (s != 0) {
-        for (int i = 0; i < s; ++i) {
-            /*vector<float> p1;
-            p1.reserve(dim);
-            for (int j = 0; j < dim; ++j) {
-                float r1 = ((float) rand() / (RAND_MAX));
-                p1.push_back(r1);
-            };*/
-            for (int j = i + 1; j < s; ++j) {
-                if (i == j) { 
-                    continue;
-                };
-                if (dim > 0) {
-                    /*vector<float> p2;
-                    p2.reserve(dim);
-                    for (int j = 0; j < dim; ++j) {
-                        float r1 = ((float) rand() / (RAND_MAX));
-                        p2.push_back(r1);
-                    };
-                    temp.weight = euclideanDistance(p1, p2);*/
-                    // cout << "weight: " << temp.weight << "\n";
-                    temp.weight = euclideanDistance(G[i], G[j]);
-                }
-                else {
-                    temp.weight = (float) rand() / (RAND_MAX);
-                }
-                // pruning (first pass attempt)
-                
-                if (temp.weight < prune_lim) {
-                    temp.parentVertex = i;
-                    temp.childVertex = j;
-                    edges.push_back(temp);
-                    temp.parentVertex = j;
-                    temp.childVertex = i;
-                    edges.push_back(temp);
-                }
-                
+    if (s == 0) {
+        return {};
+    }
+    
+    for (int i = 0; i < s; ++i) {
+        for (int j = i + 1; j < s; ++j) {
+            if (i == j) { 
+                continue;
+            }
+            if (dim > 0) {
+                // cout << "weight: " << temp.weight << "\n";
+                temp.weight = euclideanDistance(G[i], G[j]);
+            }
+            else {
+                temp.weight = (float) rand() / (RAND_MAX);
+            }
+            // pruning (first pass attempt)
+            
+            if (temp.weight < prune_lim) {
+                temp.parentVertex = i;
+                temp.childVertex = j;
+                edges.push_back(temp);
+                temp.parentVertex = j;
+                temp.childVertex = i;
+                edges.push_back(temp);
             }
         }
     }
@@ -373,9 +359,9 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
     // }
 
     // 2: sort edge weights in inc order
+    // return {1};
     sort(edges.begin(), edges.end(), compareEdges);
     
-    //  return {1};
     // 3: iterate through edges
     UnionFind u;
     
@@ -398,7 +384,6 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
                 break;
             }
             if (i != edges.size()) {
-            // skip other pair if we added the first pair
                 if (v == edges[i+1].childVertex && w == edges[i+1].parentVertex) {
                     ++i;
                 }
@@ -414,7 +399,6 @@ vector<float> MST_krusk (int dim, int size = 0, vector<vector<float> > G = {}) {
     //     cout << "\n";
     // }
 
-    // TODO find max edge
     return {sum, sum/MST.size(), maxWeight, (float) MST.size()};
 } 
 
