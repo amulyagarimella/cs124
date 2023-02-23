@@ -314,8 +314,12 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
 
     // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
     // float prune_lim = 10.;
-    float prune_lim = .175;
-    cout << prune_lim;
+    //float prune_lim = .175;
+
+    // sqrt for comparison
+    float prune_lim = 0.4 * exp((0.9)*log2(s)) - 100.;
+    prune_lim *= prune_lim;
+    //cout << prune_lim;
     /*int s = G.size();
     if (s == 0) {
         s = size;
@@ -375,16 +379,16 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
         int v = e.parentVertex;
         int w = e.childVertex;
         if (u.find(v) != u.find(w)) {
-            float weight = e.weight;
+            float weight = sqrt(e.weight);
             MST.push_back(e);
-            sum += sqrt(weight);
+            sum += weight;
             if (weight > maxWeight) {
                 maxWeight = weight;
             }
-            u.unite(v,w);
             if (MST.size() == s - 1) {
                 break;
             }
+            u.unite(v,w);
             if (i != edges.size()) {
                 if (v == edges[i+1].childVertex && w == edges[i+1].parentVertex) {
                     ++i;
