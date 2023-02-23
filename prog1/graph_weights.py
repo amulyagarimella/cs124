@@ -4,9 +4,9 @@ import seaborn as sns
 import numpy as np
 from scipy.optimize import curve_fit
 
-weights_durations = pd.read_csv("weights_durations_9.csv")
-# weights_durations_2 = pd.read_csv("weights_durations_7.csv")
-# weights_durations = pd.concat([weights_durations_1, weights_durations_2]).reset_index()
+weights_durations_1 = pd.read_csv("weights_durations_11.csv")
+weights_durations_2 = pd.read_csv("weights_durations_12.csv")
+weights_durations = pd.concat([weights_durations_1, weights_durations_2]).reset_index()
 
 # avg_over_dim = weights_durations.groupby("size").mean()
 for dim in [0,2,3,4]:
@@ -19,11 +19,11 @@ for dim in [0,2,3,4]:
 plt.show()
 plt.clf()
 
-"""def size_vs(y):
+def size_vs(y):
     sns.lineplot(data=weights_durations, x="size", y=y, hue="dim")
     plt.show()
     plt.clf()
 
 size_vs("max edge weight")
 size_vs("total MST weight")
-size_vs("avg edge weight")"""
+size_vs("avg edge weight")

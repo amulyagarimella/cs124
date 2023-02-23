@@ -310,11 +310,12 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
     vector<edge> MST;
     MST.reserve((long) s-1);
     srand (time(NULL));
+    // cout << "hello";
 
     // float prune_lim = log2(s) * max(1,dim) / (float) pow(10,log10(s)-2);
     // float prune_lim = 10.;
-    float prune_lim = (2.7 * pow(10,-19) * exp(0.9 * s) + 1)*2;
-    // cout << prune_lim;
+    float prune_lim = .175;
+    cout << prune_lim;
     /*int s = G.size();
     if (s == 0) {
         s = size;
@@ -349,6 +350,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
             }
         }
     }
+    // G.clear();
 
     // print edges
     // for (int i = 0; i < edges.size(); ++i) {
@@ -375,7 +377,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
         if (u.find(v) != u.find(w)) {
             float weight = e.weight;
             MST.push_back(e);
-            sum += weight;
+            sum += sqrt(weight);
             if (weight > maxWeight) {
                 maxWeight = weight;
             }
@@ -389,6 +391,10 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
                 }
             }
         }
+    }
+
+    if (dim != 0) {
+        G.clear();
     }
 
     // print MST
