@@ -303,8 +303,11 @@ class UnionFind {
 };
 
 // vector -> forward list
-vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) {
-    int s = max(size, (long) G.size());
+vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > *G = NULL) {
+    long s = size;
+    if (G != NULL) {
+        s = G->size();
+    }
     vector<edge> edges;
     edges.reserve((long) s*s);
     vector<edge> MST;
@@ -332,9 +335,9 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
             if (i == j) { 
                 continue;
             }
-            if (dim > 0) {
+            if (G != NULL) {
                 // cout << "weight: " << temp.weight << "\n";
-                temp.weight = euclideanDistance(G[i], G[j]);
+                temp.weight = euclideanDistance((*G)[i], (*G)[j]);
             }
             else {
                 temp.weight = (float) rand() / (RAND_MAX);
@@ -395,7 +398,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
     }
 
     if (dim != 0) {
-        G.clear();
+        G->clear();
     }
     //edges.clear();
 
@@ -422,7 +425,7 @@ int main(int argc, char* argv[]) {
     }
     else {
         vector<vector<float> > G = generateGraph(n, dim);
-        res = MST_krusk (dim, n, G);
+        res = MST_krusk (dim, n, &G);
     }
     
     for (int i = 0; i < ntrials; ++i) {
