@@ -316,9 +316,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
     // float prune_lim = 10.;
     //float prune_lim = .175;
 
-    // sqrt for comparison
-    float prune_lim = -1.8 * pow(0.8,log2(s)) + .76;
-    //cout << prune_lim;
+    float prune_lim = 2.4 * pow(0.45,log2(s)) + .1;
     /*int s = G.size();
     if (s == 0) {
         s = size;
@@ -399,7 +397,7 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > G = {}) 
     if (dim != 0) {
         G.clear();
     }
-    edges.clear();
+    //edges.clear();
 
     // print MST
     // for (int i = 0; i < MST.size(); ++i) {
