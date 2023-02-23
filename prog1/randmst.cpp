@@ -309,9 +309,9 @@ vector<float> MST_krusk (int dim, long size = 0, vector<vector<float> > *G = NUL
         s = G->size();
     }
     vector<edge> edges;
-    edges.reserve((long) s*s);
+    // edges.reserve((long) s*s);
     vector<edge> MST;
-    MST.reserve((long) s-1);
+    // MST.reserve((long) s-1);
     srand (time(NULL));
     // cout << "hello";
 
