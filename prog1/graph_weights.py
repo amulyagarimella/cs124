@@ -8,6 +8,7 @@ weights_durations_1 = pd.read_csv("weights_durations_11.csv")
 weights_durations_2 = pd.read_csv("weights_durations_12.csv")
 weights_durations_3 = pd.read_csv("weights_durations_15.csv")
 weights_durations_3["max edge weight"] = weights_durations_3["max edge weight"]**(2)
+# todo sqrt avg edge weight and recalculate MST size
 weights_durations = pd.concat([weights_durations_1, weights_durations_2, weights_durations_3]).reset_index()
 
 # avg_over_dim = weights_durations.groupby("size").mean()
