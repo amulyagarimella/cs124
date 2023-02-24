@@ -4,7 +4,7 @@ import subprocess
 
 names = ["dim", "size", "total MST weight", "avg edge weight", "max edge weight", "MST size", "duration (s)"]
 times = pd.DataFrame(columns=names)
-size = 131072
+size = 262144
 ntrials = 1
 while (size <= 262144):
     if size == 131072:

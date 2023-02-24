@@ -28,15 +28,3 @@ vector<vector<float> > generateGraph (int n, int dim) {
     }
     return G;
 }
-
-int main () {
-    vector<vector<float> > test;
-    test = generateGraph(3, 2);
-    for (int i = 0; i < test.size(); ++i) {
-        for (int j = 0; j < test[i].size(); ++j) {
-            cout << test[i][j] << ' '; 
-        }
-        cout << "\n";
-    }
-    return 0;
-}
