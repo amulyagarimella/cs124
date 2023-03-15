@@ -90,10 +90,16 @@ vector<vector<float> > * strassen (vector<vector<float> > *M1, vector<vector<flo
         int newn = ceil(log2(n));
         resizeMatrix(M1, newn);
         resizeMatrix(M2, newn);
+        n = newn;
     }
 
-    // base case
-
+    // base case: n = 1
+    vector<vector<float> > P;
+    P.resize(n);
+    if (n == 1) {
+        P[0] = {(*M1)[0][0] * (*M2)[0][0]};
+        return (&P);
+    }
 
     // if power of 2
     vector<vector<float> > * A = fill_arr(M1, 0, 0, n/2);
