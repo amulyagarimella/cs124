@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <tgmath.h> 
 #include <stdlib.h> 
 #include <vector>
 
@@ -72,9 +73,29 @@ vector<vector<float> > * AplusB (vector<vector<float> > *A, vector<vector<float>
     return (&C);
 }
 
+void resizeMatrix (vector<vector<float> > *A, int newn) {
+    int n = A->size();
+    for (int i = n-1; i < newn; ++i) {
+        (*A)[i].resize(newn);
+        for (int j = n-1; j < newn; ++j) {
+            (*A)[i][j] = 0;
+        }
+    }
+}
+
 vector<vector<float> > * strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
-    // if not power of 2
+    // handle non powers of 2 by padding with 0s
+    if (fmod(sqrt(n),1) != 0) {
+        int newn = ceil(log2(n));
+        resizeMatrix(M1, newn);
+        resizeMatrix(M2, newn);
+    }
+
+    // base case
+
+
+    // if power of 2
     vector<vector<float> > * A = fill_arr(M1, 0, 0, n/2);
     vector<vector<float> > * B = fill_arr(M1, 0, n/2, n/2);
     vector<vector<float> > * C = fill_arr(M1, n/2, 0, n/2);
