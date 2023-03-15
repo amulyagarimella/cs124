@@ -147,17 +147,19 @@ vector<vector<float> > * strassen (vector<vector<float> > *M1, vector<vector<flo
     p7->clear();
 
     // product
-    vector<vector<float> > P;
-    P.resize(n);
-    for (int i = 0; i < n; ++i) {
-        P[i].resize(n);
-    }
-    
-    int subsize = n/4;
-
     // put final parts together
+    q1->resize(n);
+    for (int i = 0; i < n; ++i) {
+        (*q1)[i].resize(n);
+        (*q1)[i].insert((*q1)[i].end(), (*q2)[i].begin(), (*q2)[i].end());
+        (*q3)[i].resize(n);
+        (*q3)[i].insert((*q3)[i].end(), (*q4)[i].begin(), (*q4)[i].end());
+    }
+    (*q1).insert((*q1).end(), (*q3).begin(), (*q3).end());
 
-
-
-    return (&P);
+    q2->clear();
+    q3->clear();
+    q4->clear();
+    // TODO unpad if needed
+    return q1;
 }
