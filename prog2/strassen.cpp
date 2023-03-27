@@ -255,10 +255,12 @@ int main(int argc, char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
     // int n = 3;
     srand(time(NULL));
-    vector<vector<float> > A = generateMatrix(n);
-    vector<vector<float> > B = generateMatrix(n);
-    // string input = argv[3];
-    // copyFromFile(&A,&B,input,n);
+    //vector<vector<float> > A = generateMatrix(n);
+    //vector<vector<float> > B = generateMatrix(n);
+    string input = argv[3];
+    vector<vector<float> > A;
+    vector<vector<float> > B;
+    copyFromFile(&A,&B,input,n);
     vector<vector<float> > C2 = strassen(&A,&B);
     printDiagonals(&C2);
 }
