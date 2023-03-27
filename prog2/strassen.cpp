@@ -158,13 +158,20 @@ Output:
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
     int oldn = n;
+    bool odd = fmod(n,2) != 0;
     /*printMatrix(M1);
     printMatrix(M2);*/
-    // base case - analytical crossover pt: n = 10
-    if (n <= 10) {
+    // base case - analytical crossover pt
+    int cutoff = 200;
+    if (odd) {
+        cutoff = 225;
+    }
+    
+    if (n <= cutoff) {
         return standard(M1, M2);
     }
-    if (fmod(n,2) != 0) {
+
+    if (odd) {
         n = n + 1;
         // cout << "not a power of 2, padding\n";
         resizeMatrix(M1, n);
@@ -247,7 +254,7 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
 
     // cout << "n = " << oldn << "\n" << flush;
 
-    if (fmod(oldn,2) != 0) {
+    if (odd) {
         resizeMatrix(&q1,oldn);
     }
     return q1;
@@ -281,23 +288,24 @@ int findTriangles (vector<vector<float> > *A) {
 
 int main(int argc, char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
-    // int n = 3;
     srand(time(NULL));
-    //vector<vector<float> > A = generateMatrix(n);
-    //vector<vector<float> > B = generateMatrix(n);
-    string input = argv[3];
-    vector<vector<float> > A;
-    vector<vector<float> > B;
-    copyFromFile(&A,&B,input,n);
-    vector<vector<float> > C2 = strassen(&A,&B);
-    printDiagonals(&C2);
+    // string input = argv[3];
+    vector<vector<float> > A = generateMatrix(n);
+    vector<vector<float> > B = generateMatrix(n);
+    vector<vector<float> > C;
+    // copyFromFile(&A,&B,input,n);
+    if (strtol(argv[1], NULL, 10) == 1) {
+        C = standard(&A,&B);
+    } else {
+        C = strassen(&A,&B);
+    }
+    printDiagonals(&C);
 
-    // test for p = 0.01
+        // test for p = 0.01
     vector<vector<float> > trig = generateTriangleMatrix(0.01);
 
     vector<vector<float> > intermed = strassen(&trig, &trig);
 
     vector<vector<float> > threeA = strassen(&trig, &intermed);
     cout << findTriangles(&threeA);
-    
 }
