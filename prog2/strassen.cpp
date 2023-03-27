@@ -255,12 +255,12 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
 }
 
 int main(int argc, char * argv[]) {
-    //int n = strtol(argv[2], NULL, 10);
-    int n = 3;
+    int n = strtol(argv[2], NULL, 10);
+    //int n = 3;
     srand (time(NULL));
     vector<vector<float> > A;
     vector<vector<float> > B;
-    string input = "input.txt";
+    string input = argv[3];
     copyFromFile(&A,&B,input,n);
     /*printMatrix(&A);
     printMatrix(&B);*/
