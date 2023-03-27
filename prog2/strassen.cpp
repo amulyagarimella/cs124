@@ -155,25 +155,24 @@ Output:
 */
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
+    int oldn = n;
     /*printMatrix(M1);
     printMatrix(M2);*/
-    if (fmod(n,2) != 0) {
-        // cout << "not a power of 2, padding\n";
-        resizeMatrix(M1, n + 1);
-        resizeMatrix(M2, n + 1);
-    }
-
     // base case - analytical crossover pt: n = 10
     if (n <= 10) {
         return standard(M1, M2);
     }
-
+    if (fmod(n,2) != 0) {
+        n = n + 1;
+        // cout << "not a power of 2, padding\n";
+        resizeMatrix(M1, n);
+        resizeMatrix(M2, n);
+    }
     // if power of 2
     vector<vector<float> > A = fill_arr(M1, 0, 0, n/2);
     vector<vector<float> > B = fill_arr(M1, 0, n/2, n/2);
     vector<vector<float> > C = fill_arr(M1, n/2, 0, n/2);
     vector<vector<float> > D = fill_arr(M1, n/2, n/2, n/2);
-
     vector<vector<float> > E = fill_arr(M2, 0, 0, n/2);
     vector<vector<float> > F = fill_arr(M2, 0, n/2, n/2);
     vector<vector<float> > G = fill_arr(M2, n/2, 0, n/2);
@@ -235,47 +234,31 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     p1p3p5.clear();
     // product
     // put final parts together
-    /*printMatrix(&q1);
-    printMatrix(&q2);
-    printMatrix(&q3);
-    printMatrix(&q4);*/
     for (int i = 0; i < n/2; ++i) {
-        //q1[i].resize(n);
         q1[i].insert(q1[i].end(), q2[i].begin(), q2[i].end());
-        //q3[i].resize(n);
         q3[i].insert(q3[i].end(), q4[i].begin(), q4[i].end());
     }
-    //q1.resize(n);
     q1.insert(q1.end(), q3.begin(), q3.end());
     q2.clear();
     q3.clear();
     q4.clear();
-    // printMatrix(&q1);
-    if (fmod(n,2) != 0) {
-        resizeMatrix(&q1,n);
+
+    // cout << "n = " << oldn << "\n" << flush;
+
+    if (fmod(oldn,2) != 0) {
+        resizeMatrix(&q1,oldn);
     }
     return q1;
 }
 
 int main(int argc, char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
-    //int n = 3;
-    srand (time(NULL));
-    vector<vector<float> > A;
-    vector<vector<float> > B;
-    string input = argv[3];
-    copyFromFile(&A,&B,input,n);
-    /*printMatrix(&A);
-    printMatrix(&B);*/
-    // vector<vector<float> > A = generateMatrix(n);
-    // printMatrix(&A);
-    // vector<vector<float> > B = generateMatrix(n);
-    // printMatrix(&B);
-    // handle non powers of 2 by padding with 0s
-    /*printMatrix(&A);
-    printMatrix(&B);*/
-    //vector<vector<float> > C1 = standard(&A,&B);
+    // int n = 3;
+    srand(time(NULL));
+    vector<vector<float> > A = generateMatrix(n);
+    vector<vector<float> > B = generateMatrix(n);
+    // string input = argv[3];
+    // copyFromFile(&A,&B,input,n);
     vector<vector<float> > C2 = strassen(&A,&B);
-    // printMatrix(&C2);
     printDiagonals(&C2);
 }
