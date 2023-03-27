@@ -3,6 +3,9 @@
 #include <tgmath.h> 
 #include <stdlib.h> 
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 // TODO make changes to input format
 using namespace std;
@@ -28,8 +31,26 @@ void printDiagonals (vector<vector<float> > *M) {
 }
 
 // TODO
-void copyFromFile (vector<vector<float> > *A, string inputfile) {
-    cout << "x";
+// assume A is n x n
+void copyFromFile (vector<vector<float> > *A, vector<vector<float> > *B, string inputfile, int n) {
+    ifstream input(inputfile);
+    string line;
+    for (int i = 0; i < n; ++i) {
+        vector<float> v;
+        for (int j = 0; j < n; ++j) { 
+            getline(input, line);
+            v.push_back(stol(line, NULL, 10));
+        }
+        (*A).push_back(v);
+    }
+    for (int i = 0; i < n; ++i) {
+        vector<float> v;
+        for (int j = 0; j < n; ++j) { 
+            getline(input, line);
+            v.push_back(stol(line, NULL, 10));
+        }
+        (*B).push_back(v);
+    }
 }
 
 vector<vector<float> > generateMatrix (int n) {
@@ -137,13 +158,13 @@ Output:
 */
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
-    /*
-    printMatrix(M1);
-    printMatrix(M2);
-    */
+    
+    /*printMatrix(M1);
+    printMatrix(M2);*/
+    
 
-    // base case: n = 1
-    if (n == 1 || n == 2) {
+    // base case - analytical crossover pt: n = 10
+    if (n <= 10) {
         return standard(M1, M2);
     }
 
@@ -234,14 +255,20 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
 }
 
 int main(int argc, char * argv[]) {
-    // int n = strtol(argv[2], NULL, 10);
+    //int n = strtol(argv[2], NULL, 10);
     int n = 3;
     srand (time(NULL));
+    vector<vector<float> > A;
+    vector<vector<float> > B;
+    string input = "input.txt";
+    copyFromFile(&A,&B,input,n);
+    /*printMatrix(&A);
+    printMatrix(&B);*/
     // TODO read in A and B
-    vector<vector<float> > A = generateMatrix(n);
-    printMatrix(&A);
-    vector<vector<float> > B = generateMatrix(n);
-    printMatrix(&B);
+    // vector<vector<float> > A = generateMatrix(n);
+    // printMatrix(&A);
+    // vector<vector<float> > B = generateMatrix(n);
+    // printMatrix(&B);
 
     int oldn = n;
     // handle non powers of 2 by padding with 0s
@@ -252,13 +279,14 @@ int main(int argc, char * argv[]) {
         resizeMatrix(&B, newn);
         n = newn;
     }
-
+    /*printMatrix(&A);
+    printMatrix(&B);*/
     //vector<vector<float> > C1 = standard(&A,&B);
     vector<vector<float> > C2 = strassen(&A,&B);
     // unpad if needed
     if (n != oldn) {
         resizeMatrix(&C2,oldn);
     }
-    printMatrix(&C2);
-    // printDiagonals(&C2);
+    // printMatrix(&C2);
+    printDiagonals(&C2);
 }
