@@ -114,10 +114,15 @@ vector<vector<float> > AplusB (vector<vector<float> > *A, vector<vector<float> >
 
 void resizeMatrix (vector<vector<float> > *A, int newn) {
     int n = A->size();
-    for (int i = n-1; i < newn; ++i) {
+    A->resize(newn);
+    for (int i = 0; i < newn; ++i) {
         (*A)[i].resize(newn);
-        for (int j = n-1; j < newn; ++j) {
+    }
+    if (newn > n) {
+        for (int i = n; i < newn; ++i) {
+            for (int j = n; j < newn; ++j) {
             (*A)[i][j] = 0;
+            }
         }
     }
 }
@@ -132,14 +137,6 @@ Output:
 */
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
-    // handle non powers of 2 by padding with 0s
-    if (n != 1 && fmod(n,2) != 0 && fmod(sqrt(n),1) != 0) {
-        cout << "not a power of 2, padding\n";
-        int newn = ceil(log2(n));
-        resizeMatrix(M1, newn);
-        resizeMatrix(M2, newn);
-        n = newn;
-    }
     /*
     printMatrix(M1);
     printMatrix(M2);
@@ -162,7 +159,7 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     vector<vector<float> > H = fill_arr(M2, n/2, n/2, n/2);
     
     // products
-    // vector<vector<float> > AB = ;
+    vector<vector<float> > AB = AplusB(&A,&B);
     vector<vector<float> > AD = AplusB(&A,&D);
     vector<vector<float> > CA = AplusB(&C,&A,true);
     vector<vector<float> > FH = AplusB(&F,&H,true);
@@ -174,7 +171,7 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     vector<vector<float> > EF = AplusB(&E,&F);
     
     vector<vector<float> > p1 = strassen(&A, &FH);
-    vector<vector<float> > p2 = strassen(&AplusB(&A,&B), &H);
+    vector<vector<float> > p2 = strassen(&AB, &H);
     vector<vector<float> > p3 = strassen(&CD, &E);
     vector<vector<float> > p4 = strassen(&D, &GE);
     vector<vector<float> > p5 = strassen(&AD, &EH);
@@ -232,21 +229,36 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     q2.clear();
     q3.clear();
     q4.clear();
-    // TODO unpad if needed
     // printMatrix(&q1);
     return q1;
 }
 
 int main(int argc, char * argv[]) {
-    int n = strtol(argv[1], NULL, 10);
+    // int n = strtol(argv[2], NULL, 10);
+    int n = 3;
     srand (time(NULL));
     // TODO read in A and B
     vector<vector<float> > A = generateMatrix(n);
-    //printMatrix(&A);
+    printMatrix(&A);
     vector<vector<float> > B = generateMatrix(n);
-    //printMatrix(&B);
+    printMatrix(&B);
+
+    int oldn = n;
+    // handle non powers of 2 by padding with 0s
+    if (n != 1 && fmod(n,2) != 0 && fmod(sqrt(n),1) != 0) {
+        // cout << "not a power of 2, padding\n";
+        int newn = pow(2,ceil(log2(n)));
+        resizeMatrix(&A, newn);
+        resizeMatrix(&B, newn);
+        n = newn;
+    }
+
     //vector<vector<float> > C1 = standard(&A,&B);
     vector<vector<float> > C2 = strassen(&A,&B);
-    //printMatrix(&C1);
-    printDiagonals(&C2);
+    // unpad if needed
+    if (n != oldn) {
+        resizeMatrix(&C2,oldn);
+    }
+    printMatrix(&C2);
+    // printDiagonals(&C2);
 }
