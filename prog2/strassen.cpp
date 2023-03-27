@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 
-// TODO make changes to input format
 using namespace std;
 
 void printMatrix (vector<vector<float> > *M) {
@@ -30,8 +29,6 @@ void printDiagonals (vector<vector<float> > *M) {
     cout << "\n";
 }
 
-// TODO
-// assume A is n x n
 void copyFromFile (vector<vector<float> > *A, vector<vector<float> > *B, string inputfile, int n) {
     ifstream input(inputfile);
     string line;
@@ -158,10 +155,13 @@ Output:
 */
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
-    
     /*printMatrix(M1);
     printMatrix(M2);*/
-    
+    if (fmod(n,2) != 0) {
+        // cout << "not a power of 2, padding\n";
+        resizeMatrix(M1, n + 1);
+        resizeMatrix(M2, n + 1);
+    }
 
     // base case - analytical crossover pt: n = 10
     if (n <= 10) {
@@ -251,6 +251,9 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     q3.clear();
     q4.clear();
     // printMatrix(&q1);
+    if (fmod(n,2) != 0) {
+        resizeMatrix(&q1,n);
+    }
     return q1;
 }
 
@@ -264,29 +267,15 @@ int main(int argc, char * argv[]) {
     copyFromFile(&A,&B,input,n);
     /*printMatrix(&A);
     printMatrix(&B);*/
-    // TODO read in A and B
     // vector<vector<float> > A = generateMatrix(n);
     // printMatrix(&A);
     // vector<vector<float> > B = generateMatrix(n);
     // printMatrix(&B);
-
-    int oldn = n;
     // handle non powers of 2 by padding with 0s
-    if (n != 1 && fmod(n,2) != 0 && fmod(sqrt(n),1) != 0) {
-        // cout << "not a power of 2, padding\n";
-        int newn = pow(2,ceil(log2(n)));
-        resizeMatrix(&A, newn);
-        resizeMatrix(&B, newn);
-        n = newn;
-    }
     /*printMatrix(&A);
     printMatrix(&B);*/
     //vector<vector<float> > C1 = standard(&A,&B);
     vector<vector<float> > C2 = strassen(&A,&B);
-    // unpad if needed
-    if (n != oldn) {
-        resizeMatrix(&C2,oldn);
-    }
     // printMatrix(&C2);
     printDiagonals(&C2);
 }
