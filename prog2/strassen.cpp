@@ -156,13 +156,20 @@ Output:
 vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
     int n = M1->size();
     int oldn = n;
+    bool odd = fmod(n,2) != 0;
     /*printMatrix(M1);
     printMatrix(M2);*/
-    // base case - analytical crossover pt: n = 10
-    if (n <= 10) {
+    // base case - analytical crossover pt
+    int cutoff = 15;
+    if (odd) {
+        cutoff = 37;
+    }
+    
+    if (n <= cutoff) {
         return standard(M1, M2);
     }
-    if (fmod(n,2) != 0) {
+
+    if (odd) {
         n = n + 1;
         // cout << "not a power of 2, padding\n";
         resizeMatrix(M1, n);
@@ -190,13 +197,13 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     vector<vector<float> > GH = AplusB(&G,&H);
     vector<vector<float> > EF = AplusB(&E,&F);
     
-    vector<vector<float> > p1 = strassen(&A, &FH);
-    vector<vector<float> > p2 = strassen(&AB, &H);
-    vector<vector<float> > p3 = strassen(&CD, &E);
-    vector<vector<float> > p4 = strassen(&D, &GE);
-    vector<vector<float> > p5 = strassen(&AD, &EH);
-    vector<vector<float> > p6 = strassen(&BD, &GH);
-    vector<vector<float> > p7 = strassen(&CA, &EF);
+    vector<vector<float> > p1 = standard(&A, &FH);
+    vector<vector<float> > p2 = standard(&AB, &H);
+    vector<vector<float> > p3 = standard(&CD, &E);
+    vector<vector<float> > p4 = standard(&D, &GE);
+    vector<vector<float> > p5 = standard(&AD, &EH);
+    vector<vector<float> > p6 = standard(&BD, &GH);
+    vector<vector<float> > p7 = standard(&CA, &EF);
 
     // clear A ... H
     A.clear();
@@ -245,22 +252,28 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
 
     // cout << "n = " << oldn << "\n" << flush;
 
-    if (fmod(oldn,2) != 0) {
+    if (odd) {
         resizeMatrix(&q1,oldn);
     }
     return q1;
 }
 
+int numTriangles (vector<vector<float> > * A, float p) {
+    return 0;
+}
+
 int main(int argc, char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
-    // int n = 3;
     srand(time(NULL));
-    //vector<vector<float> > A = generateMatrix(n);
-    //vector<vector<float> > B = generateMatrix(n);
-    string input = argv[3];
-    vector<vector<float> > A;
-    vector<vector<float> > B;
-    copyFromFile(&A,&B,input,n);
-    vector<vector<float> > C2 = strassen(&A,&B);
-    printDiagonals(&C2);
+    // string input = argv[3];
+    vector<vector<float> > A = generateMatrix(n);
+    vector<vector<float> > B = generateMatrix(n);
+    vector<vector<float> > C;
+    // copyFromFile(&A,&B,input,n);
+    if (strtol(argv[1], NULL, 10) == 1) {
+        C = standard(&A,&B);
+    } else {
+        C = strassen(&A,&B);
+    }
+    printDiagonals(&C);
 }
