@@ -9,6 +9,8 @@
 
 using namespace std;
 
+// TASK 3: Triangles
+
 void printMatrix (vector<vector<float> > *M) {
     int n = M->size();
     cout << "[\n";
@@ -190,13 +192,13 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     vector<vector<float> > GH = AplusB(&G,&H);
     vector<vector<float> > EF = AplusB(&E,&F);
     
-    vector<vector<float> > p1 = strassen(&A, &FH);
-    vector<vector<float> > p2 = strassen(&AB, &H);
-    vector<vector<float> > p3 = strassen(&CD, &E);
-    vector<vector<float> > p4 = strassen(&D, &GE);
-    vector<vector<float> > p5 = strassen(&AD, &EH);
-    vector<vector<float> > p6 = strassen(&BD, &GH);
-    vector<vector<float> > p7 = strassen(&CA, &EF);
+    vector<vector<float> > p1 = standard(&A, &FH);
+    vector<vector<float> > p2 = standard(&AB, &H);
+    vector<vector<float> > p3 = standard(&CD, &E);
+    vector<vector<float> > p4 = standard(&D, &GE);
+    vector<vector<float> > p5 = standard(&AD, &EH);
+    vector<vector<float> > p6 = standard(&BD, &GH);
+    vector<vector<float> > p7 = standard(&CA, &EF);
 
     // clear A ... H
     A.clear();
@@ -251,6 +253,32 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     return q1;
 }
 
+vector<vector<float> > generateTriangleMatrix (float p) {
+    vector<vector<float> > M; 
+    M.resize(32);
+    for (int i = 0; i < 32; ++i) {
+        M[i].resize(32);
+        for (int j = 0; j < 32; ++j) {
+            float flip = (int)(100.0 * rand() / (RAND_MAX + 1.0)) + 1;
+            if (flip <= p * 100) {
+                M[i][j] = 1;
+            }
+            else {
+                M[i][j] = 0;
+            }
+        }
+    }
+    return M;
+}
+
+int findTriangles (vector<vector<float> > *A) {
+    float sum = 0;
+    for (int i = 0; i < 32; ++i) {
+      sum = sum + (*A)[i][i];
+    }
+    return (int) sum / 6;
+}
+
 int main(int argc, char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
     // int n = 3;
@@ -263,4 +291,13 @@ int main(int argc, char * argv[]) {
     copyFromFile(&A,&B,input,n);
     vector<vector<float> > C2 = strassen(&A,&B);
     printDiagonals(&C2);
+
+    // test for p = 0.01
+    vector<vector<float> > trig = generateTriangleMatrix(0.01);
+
+    vector<vector<float> > intermed = strassen(&trig, &trig);
+
+    vector<vector<float> > threeA = strassen(&trig, &intermed);
+    cout << findTriangles(&threeA);
+    
 }
