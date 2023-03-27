@@ -160,9 +160,9 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     /*printMatrix(M1);
     printMatrix(M2);*/
     // base case - analytical crossover pt
-    int cutoff = 15;
+    int cutoff = 200;
     if (odd) {
-        cutoff = 37;
+        cutoff = 225;
     }
     
     if (n <= cutoff) {
