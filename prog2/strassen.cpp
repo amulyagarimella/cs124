@@ -292,7 +292,7 @@ int findTriangles (vector<vector<float> > *A, int n) {
 
 int main(int argc, char * argv[]) {
     // int n = strtol(argv[2], NULL, 10);
-    int n = 32;
+    int n = 512;
     srand(time(NULL));
     // string input = argv[3];
     vector<vector<float> > A = generateMatrix(n);
