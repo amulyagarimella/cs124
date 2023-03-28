@@ -9,8 +9,6 @@
 
 using namespace std;
 
-// TASK 3: Triangles
-
 void printMatrix (vector<vector<int> > *M) {
     int n = M->size();
     cout << "[\n";
@@ -31,6 +29,7 @@ void printDiagonals (vector<vector<int> > *M) {
     cout << "\n";
 }
 
+// To get matrices A and B as specified
 void copyFromFile (vector<vector<int> > *A, vector<vector<int> > *B, string inputfile, int n) {
     ifstream input(inputfile);
     string line;
@@ -52,6 +51,7 @@ void copyFromFile (vector<vector<int> > *A, vector<vector<int> > *B, string inpu
     }
 }
 
+// generate random matrix - for testing
 vector<vector<int> > generateMatrix (int n) {
     vector<vector<int> > M; 
     M.resize(n);
@@ -72,10 +72,6 @@ Input:
 
 Output: 
 - product of A and B
-
-Runtime: O(n^3)
-
-Tests: runs, correct
 */
 vector<vector<int> > standard (vector<vector<int> > *A, vector<vector<int> > *B) {
     int n = A->size();
@@ -91,18 +87,15 @@ vector<vector<int> > standard (vector<vector<int> > *A, vector<vector<int> > *B)
             }
         }
     }
-    /*printMatrix(A);
-    printMatrix(B);
-    printMatrix(&C);*/
     return C;
 }
 
+// Create a new array of len x len from M
+// starting from row rstart and col cstart
 vector<vector<int> > fill_arr (vector<vector<int> > *M, int rstart, int cstart, int len) {
     vector<vector<int> > A;
     A.resize(len);
-    //cout << len;
     for (int i = rstart; i < rstart + len; ++i) {
-        //cout << i;
         A[i-rstart].resize(len);
         for (int j = cstart; j < cstart + len; ++j) {
             int entry = (*M)[i][j];
@@ -112,6 +105,7 @@ vector<vector<int> > fill_arr (vector<vector<int> > *M, int rstart, int cstart, 
     return A;
 }
 
+// Add A and B
 vector<vector<int> > AplusB (vector<vector<int> > *A, vector<vector<int> > *B, bool subtract=false) {
     vector<vector<int> > C;
     int n = A->size();
@@ -130,8 +124,7 @@ vector<vector<int> > AplusB (vector<vector<int> > *A, vector<vector<int> > *B, b
     return C;
 }
 
-
-
+// Pad and unpad matrix
 void resizeMatrix (vector<vector<int> > *A, int newn) {
     int n = A->size();
     A->resize(newn);
@@ -159,9 +152,8 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     int n = M1->size();
     int oldn = n;
     bool odd = fmod(n,2) != 0;
-    /*printMatrix(M1);
-    printMatrix(M2);*/
-    // base case - analytical crossover pt
+    
+    // base case - experimentally determined crossover pt
     int cutoff = 200;
     if (odd) {
         cutoff = 225;
@@ -171,12 +163,13 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
         return standard(M1, M2);
     }
 
+    // padding
     if (odd) {
         n = n + 1;
-        // cout << "not a power of 2, padding\n";
         resizeMatrix(M1, n);
         resizeMatrix(M2, n);
     }
+
     // if power of 2
     vector<vector<int> > A = fill_arr(M1, 0, 0, n/2);
     vector<vector<int> > B = fill_arr(M1, 0, n/2, n/2);
@@ -199,13 +192,13 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > GH = AplusB(&G,&H);
     vector<vector<int> > EF = AplusB(&E,&F);
     
-    vector<vector<int> > p1 = standard(&A, &FH);
-    vector<vector<int> > p2 = standard(&AB, &H);
-    vector<vector<int> > p3 = standard(&CD, &E);
-    vector<vector<int> > p4 = standard(&D, &GE);
-    vector<vector<int> > p5 = standard(&AD, &EH);
-    vector<vector<int> > p6 = standard(&BD, &GH);
-    vector<vector<int> > p7 = standard(&CA, &EF);
+    vector<vector<int> > p1 = strassen(&A, &FH);
+    vector<vector<int> > p2 = strassen(&AB, &H);
+    vector<vector<int> > p3 = strassen(&CD, &E);
+    vector<vector<int> > p4 = strassen(&D, &GE);
+    vector<vector<int> > p5 = strassen(&AD, &EH);
+    vector<vector<int> > p6 = strassen(&BD, &GH);
+    vector<vector<int> > p7 = strassen(&CA, &EF);
 
     // clear A ... H
     vector<vector<int> > ().swap(A);
@@ -217,7 +210,7 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > ().swap(G);
     vector<vector<int> > ().swap(H);
 
-    // parts
+    // parts, clearing as needed
     vector<vector<int> > p4p2 = AplusB(&p4,&p2,true);
     vector<vector<int> > p4p2p5 = AplusB(&p4p2,&p5);
     vector<vector<int> > ().swap(p4p2);
@@ -225,6 +218,7 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > p1p3p5 = AplusB(&p1p3,&p5);
     vector<vector<int> > ().swap(p1p3);
 
+    // quadrants
     vector<vector<int> > q1 = AplusB(&p4p2p5,&p6);
     vector<vector<int> > ().swap(p4p2p5);
     vector<vector<int> > ().swap(p6);
@@ -239,7 +233,7 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > ().swap(p7);
 
     // product
-    // put final parts together
+    // put final quadrants together
     for (int i = 0; i < n/2; ++i) {
         q1[i].insert(q1[i].end(), q2[i].begin(), q2[i].end());
         q3[i].insert(q3[i].end(), q4[i].begin(), q4[i].end());
@@ -248,8 +242,6 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > ().swap(q2);
     vector<vector<int> > ().swap(q3);
     vector<vector<int> > ().swap(q4);
-
-    // cout << "n = " << oldn << "\n" << flush;
 
     if (odd) {
         resizeMatrix(&q1,oldn);
@@ -288,25 +280,25 @@ int findTriangles (vector<vector<int> > *A, int n) {
 }
 
 int main(int argc, char * argv[]) {
-    // int n = strtol(argv[2], NULL, 10);
-    int n = 512;
+    int n = strtol(argv[2], NULL, 10);
     srand(time(NULL));
-    // string input = argv[3];
-    vector<vector<int> > A = generateMatrix(n);
-    vector<vector<int> > B = generateMatrix(n);
-    vector<vector<int> > C;
-    // copyFromFile(&A,&B,input,n);
-    /*if (strtol(argv[1], NULL, 10) == 1) {
+    string input = argv[3];
+    // testing
+    /*vector<vector<int> > A = generateMatrix(n);
+    vector<vector<int> > B = generateMatrix(n);*/
+    vector<vector<int> > A,B,C;
+    copyFromFile(&A,&B,input,n);
+    if (strtol(argv[1], NULL, 10) == 1) {
         C = standard(&A,&B);
     } else {
         C = strassen(&A,&B);
-    }*/
+    }
     
-    // printDiagonals(&C);
+    printDiagonals(&C);
 
-        // test for p = 0.01
-    vector<vector<int> > trig = generateTriangleMatrix(50, n);
+    // triangles
+    /*vector<vector<int> > trig = generateTriangleMatrix(50, n);
     vector<vector<int> > intermed = strassen(&trig, &trig);
     vector<vector<int> > threeA = strassen(&trig, &intermed);
-    cout << findTriangles(&threeA, n);
+    cout << findTriangles(&threeA, n);*/
 }
