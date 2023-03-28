@@ -260,12 +260,14 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     return q1;
 }
 
-vector<vector<float> > generateTriangleMatrix (int p) {
+vector<vector<float> > generateTriangleMatrix (int p, int n) {
     vector<vector<float> > M; 
-    M.resize(1024);
-    for (int i = 0; i < 1024; ++i) {
-        M[i].resize(1024);
-        for (int j = i; j < 1024; ++j) {
+    M.resize(n);
+    for (int i = 0; i < n; ++i) {
+        M[i].resize(n);
+    }
+    for (int i = 0; i < n; ++i) {
+        for (int j = i; j < n; ++j) {
             int flip = (int)(100.0 * rand() / (RAND_MAX + 1.0)) + 1;
             if (flip <= p) {
                 M[i][j] = 1;
@@ -280,35 +282,36 @@ vector<vector<float> > generateTriangleMatrix (int p) {
     return M;
 }
 
-int findTriangles (vector<vector<float> > *A) {
+int findTriangles (vector<vector<float> > *A, int n) {
     float sum = 0;
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < n; ++i) {
       sum = sum + (*A)[i][i];
     }
     return (int) sum / 6;
 }
 
 int main(int argc, char * argv[]) {
-    int n = strtol(argv[2], NULL, 10);
+    // int n = strtol(argv[2], NULL, 10);
+    int n = 1024;
     srand(time(NULL));
     // string input = argv[3];
     vector<vector<float> > A = generateMatrix(n);
     vector<vector<float> > B = generateMatrix(n);
     vector<vector<float> > C;
     // copyFromFile(&A,&B,input,n);
-    if (strtol(argv[1], NULL, 10) == 1) {
+    /*if (strtol(argv[1], NULL, 10) == 1) {
         C = standard(&A,&B);
     } else {
         C = strassen(&A,&B);
-    }
+    }*/
     
     // printDiagonals(&C);
 
         // test for p = 0.01
-    vector<vector<float> > trig = generateTriangleMatrix(50);
+    vector<vector<float> > trig = generateTriangleMatrix(50, n);
 
     vector<vector<float> > intermed = strassen(&trig, &trig);
 
     vector<vector<float> > threeA = strassen(&trig, &intermed);
-    cout << findTriangles(&threeA);
+    cout << findTriangles(&threeA, n);
 }
