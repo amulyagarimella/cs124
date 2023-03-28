@@ -11,7 +11,7 @@ using namespace std;
 
 // TASK 3: Triangles
 
-void printMatrix (vector<vector<float> > *M) {
+void printMatrix (vector<vector<int> > *M) {
     int n = M->size();
     cout << "[\n";
     for (int i = 0; i < n; ++i) {
@@ -23,7 +23,7 @@ void printMatrix (vector<vector<float> > *M) {
     cout << "]\n\n";
 }
 
-void printDiagonals (vector<vector<float> > *M) {
+void printDiagonals (vector<vector<int> > *M) {
     int n = M->size();
     for (int i = 0; i < n; ++i) {
         cout << (*M)[i][i] << "\n";
@@ -31,11 +31,11 @@ void printDiagonals (vector<vector<float> > *M) {
     cout << "\n";
 }
 
-void copyFromFile (vector<vector<float> > *A, vector<vector<float> > *B, string inputfile, int n) {
+void copyFromFile (vector<vector<int> > *A, vector<vector<int> > *B, string inputfile, int n) {
     ifstream input(inputfile);
     string line;
     for (int i = 0; i < n; ++i) {
-        vector<float> v;
+        vector<int> v;
         for (int j = 0; j < n; ++j) { 
             getline(input, line);
             v.push_back(stol(line, NULL, 10));
@@ -43,7 +43,7 @@ void copyFromFile (vector<vector<float> > *A, vector<vector<float> > *B, string 
         (*A).push_back(v);
     }
     for (int i = 0; i < n; ++i) {
-        vector<float> v;
+        vector<int> v;
         for (int j = 0; j < n; ++j) { 
             getline(input, line);
             v.push_back(stol(line, NULL, 10));
@@ -52,8 +52,8 @@ void copyFromFile (vector<vector<float> > *A, vector<vector<float> > *B, string 
     }
 }
 
-vector<vector<float> > generateMatrix (int n) {
-    vector<vector<float> > M; 
+vector<vector<int> > generateMatrix (int n) {
+    vector<vector<int> > M; 
     M.resize(n);
     for (int i = 0; i < n; ++i) {
         M[i].resize(n);
@@ -77,13 +77,14 @@ Runtime: O(n^3)
 
 Tests: runs, correct
 */
-vector<vector<float> > standard (vector<vector<float> > *A, vector<vector<float> > *B) {
+vector<vector<int> > standard (vector<vector<int> > *A, vector<vector<int> > *B) {
     int n = A->size();
-    vector<vector<float> > C;
+    vector<vector<int> > C;
     C.resize(n);
 
     for (int i = 0; i < n; ++i) {
         C[i].resize(n);
+        // todo optimize?
         for (int j = 0; j < n; ++j) {
             // row i of A, col j of B
             for (int k = 0; k < n; ++k) {
@@ -97,8 +98,8 @@ vector<vector<float> > standard (vector<vector<float> > *A, vector<vector<float>
     return C;
 }
 
-vector<vector<float> > fill_arr (vector<vector<float> > *M, int rstart, int cstart, int len) {
-    vector<vector<float> > A;
+vector<vector<int> > fill_arr (vector<vector<int> > *M, int rstart, int cstart, int len) {
+    vector<vector<int> > A;
     A.resize(len);
     //cout << len;
     for (int i = rstart; i < rstart + len; ++i) {
@@ -112,8 +113,8 @@ vector<vector<float> > fill_arr (vector<vector<float> > *M, int rstart, int csta
     return A;
 }
 
-vector<vector<float> > AplusB (vector<vector<float> > *A, vector<vector<float> > *B, bool subtract=false) {
-    vector<vector<float> > C;
+vector<vector<int> > AplusB (vector<vector<int> > *A, vector<vector<int> > *B, bool subtract=false) {
+    vector<vector<int> > C;
     int n = A->size();
     C.resize(n);
     for (int i = 0; i < n; ++i) {
@@ -132,7 +133,7 @@ vector<vector<float> > AplusB (vector<vector<float> > *A, vector<vector<float> >
 
 
 
-void resizeMatrix (vector<vector<float> > *A, int newn) {
+void resizeMatrix (vector<vector<int> > *A, int newn) {
     int n = A->size();
     A->resize(newn);
     for (int i = 0; i < newn; ++i) {
@@ -155,7 +156,7 @@ Input:
 Output: 
 - product of M1 and M2
 */
-vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float> > *M2) {
+vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M2) {
     int n = M1->size();
     int oldn = n;
     bool odd = fmod(n,2) != 0;
@@ -178,34 +179,34 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
         resizeMatrix(M2, n);
     }
     // if power of 2
-    vector<vector<float> > A = fill_arr(M1, 0, 0, n/2);
-    vector<vector<float> > B = fill_arr(M1, 0, n/2, n/2);
-    vector<vector<float> > C = fill_arr(M1, n/2, 0, n/2);
-    vector<vector<float> > D = fill_arr(M1, n/2, n/2, n/2);
-    vector<vector<float> > E = fill_arr(M2, 0, 0, n/2);
-    vector<vector<float> > F = fill_arr(M2, 0, n/2, n/2);
-    vector<vector<float> > G = fill_arr(M2, n/2, 0, n/2);
-    vector<vector<float> > H = fill_arr(M2, n/2, n/2, n/2);
+    vector<vector<int> > A = fill_arr(M1, 0, 0, n/2);
+    vector<vector<int> > B = fill_arr(M1, 0, n/2, n/2);
+    vector<vector<int> > C = fill_arr(M1, n/2, 0, n/2);
+    vector<vector<int> > D = fill_arr(M1, n/2, n/2, n/2);
+    vector<vector<int> > E = fill_arr(M2, 0, 0, n/2);
+    vector<vector<int> > F = fill_arr(M2, 0, n/2, n/2);
+    vector<vector<int> > G = fill_arr(M2, n/2, 0, n/2);
+    vector<vector<int> > H = fill_arr(M2, n/2, n/2, n/2);
     
     // products
-    vector<vector<float> > AB = AplusB(&A,&B);
-    vector<vector<float> > AD = AplusB(&A,&D);
-    vector<vector<float> > CA = AplusB(&C,&A,true);
-    vector<vector<float> > FH = AplusB(&F,&H,true);
-    vector<vector<float> > CD = AplusB(&C,&D);
-    vector<vector<float> > GE = AplusB(&G,&E,true);
-    vector<vector<float> > EH = AplusB(&E,&H);
-    vector<vector<float> > BD = AplusB(&B,&D,true);
-    vector<vector<float> > GH = AplusB(&G,&H);
-    vector<vector<float> > EF = AplusB(&E,&F);
+    vector<vector<int> > AB = AplusB(&A,&B);
+    vector<vector<int> > AD = AplusB(&A,&D);
+    vector<vector<int> > CA = AplusB(&C,&A,true);
+    vector<vector<int> > FH = AplusB(&F,&H,true);
+    vector<vector<int> > CD = AplusB(&C,&D);
+    vector<vector<int> > GE = AplusB(&G,&E,true);
+    vector<vector<int> > EH = AplusB(&E,&H);
+    vector<vector<int> > BD = AplusB(&B,&D,true);
+    vector<vector<int> > GH = AplusB(&G,&H);
+    vector<vector<int> > EF = AplusB(&E,&F);
     
-    vector<vector<float> > p1 = strassen(&A, &FH);
-    vector<vector<float> > p2 = strassen(&AB, &H);
-    vector<vector<float> > p3 = strassen(&CD, &E);
-    vector<vector<float> > p4 = strassen(&D, &GE);
-    vector<vector<float> > p5 = strassen(&AD, &EH);
-    vector<vector<float> > p6 = strassen(&BD, &GH);
-    vector<vector<float> > p7 = strassen(&CA, &EF);
+    vector<vector<int> > p1 = strassen(&A, &FH);
+    vector<vector<int> > p2 = strassen(&AB, &H);
+    vector<vector<int> > p3 = strassen(&CD, &E);
+    vector<vector<int> > p4 = strassen(&D, &GE);
+    vector<vector<int> > p5 = strassen(&AD, &EH);
+    vector<vector<int> > p6 = strassen(&BD, &GH);
+    vector<vector<int> > p7 = strassen(&CA, &EF);
 
     // clear A ... H
     A.clear();
@@ -219,15 +220,15 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
 
     // parts
     // TODO modify AplusB to return something that can be used without saving
-    vector<vector<float> > p4p2 = AplusB(&p4,&p2,true);
-    vector<vector<float> > p4p2p5 = AplusB(&p4p2,&p5);
-    vector<vector<float> > p1p3 = AplusB(&p1,&p3,true);
-    vector<vector<float> > p1p3p5 = AplusB(&p1p3,&p5);
+    vector<vector<int> > p4p2 = AplusB(&p4,&p2,true);
+    vector<vector<int> > p4p2p5 = AplusB(&p4p2,&p5);
+    vector<vector<int> > p1p3 = AplusB(&p1,&p3,true);
+    vector<vector<int> > p1p3p5 = AplusB(&p1p3,&p5);
 
-    vector<vector<float> > q1 = AplusB(&p4p2p5,&p6);
-    vector<vector<float> > q2 = AplusB(&p1,&p2);
-    vector<vector<float> > q3 = AplusB(&p3,&p4);
-    vector<vector<float> > q4 = AplusB(&p1p3p5,&p7);
+    vector<vector<int> > q1 = AplusB(&p4p2p5,&p6);
+    vector<vector<int> > q2 = AplusB(&p1,&p2);
+    vector<vector<int> > q3 = AplusB(&p3,&p4);
+    vector<vector<int> > q4 = AplusB(&p1p3p5,&p7);
 
     // clear p1...p7
     p1.clear();
@@ -260,8 +261,8 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     return q1;
 }
 
-vector<vector<float> > generateTriangleMatrix (int p, int n) {
-    vector<vector<float> > M; 
+vector<vector<int> > generateTriangleMatrix (int p, int n) {
+    vector<vector<int> > M; 
     M.resize(n);
     for (int i = 0; i < n; ++i) {
         M[i].resize(n);
@@ -282,8 +283,8 @@ vector<vector<float> > generateTriangleMatrix (int p, int n) {
     return M;
 }
 
-int findTriangles (vector<vector<float> > *A, int n) {
-    float sum = 0;
+int findTriangles (vector<vector<int> > *A, int n) {
+    int sum = 0;
     for (int i = 0; i < n; ++i) {
       sum = sum + (*A)[i][i];
     }
@@ -295,9 +296,9 @@ int main(int argc, char * argv[]) {
     int n = 512;
     srand(time(NULL));
     // string input = argv[3];
-    vector<vector<float> > A = generateMatrix(n);
-    vector<vector<float> > B = generateMatrix(n);
-    vector<vector<float> > C;
+    vector<vector<int> > A = generateMatrix(n);
+    vector<vector<int> > B = generateMatrix(n);
+    vector<vector<int> > C;
     // copyFromFile(&A,&B,input,n);
     /*if (strtol(argv[1], NULL, 10) == 1) {
         C = standard(&A,&B);
@@ -308,8 +309,8 @@ int main(int argc, char * argv[]) {
     // printDiagonals(&C);
 
         // test for p = 0.01
-    vector<vector<float> > trig = generateTriangleMatrix(50, n);
-    vector<vector<float> > intermed = strassen(&trig, &trig);
-    vector<vector<float> > threeA = strassen(&trig, &intermed);
+    vector<vector<int> > trig = generateTriangleMatrix(50, n);
+    vector<vector<int> > intermed = strassen(&trig, &trig);
+    vector<vector<int> > threeA = strassen(&trig, &intermed);
     cout << findTriangles(&threeA, n);
 }
