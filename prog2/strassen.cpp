@@ -199,48 +199,45 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
     vector<vector<int> > GH = AplusB(&G,&H);
     vector<vector<int> > EF = AplusB(&E,&F);
     
-    vector<vector<int> > p1 = strassen(&A, &FH);
-    vector<vector<int> > p2 = strassen(&AB, &H);
-    vector<vector<int> > p3 = strassen(&CD, &E);
-    vector<vector<int> > p4 = strassen(&D, &GE);
-    vector<vector<int> > p5 = strassen(&AD, &EH);
-    vector<vector<int> > p6 = strassen(&BD, &GH);
-    vector<vector<int> > p7 = strassen(&CA, &EF);
+    vector<vector<int> > p1 = standard(&A, &FH);
+    vector<vector<int> > p2 = standard(&AB, &H);
+    vector<vector<int> > p3 = standard(&CD, &E);
+    vector<vector<int> > p4 = standard(&D, &GE);
+    vector<vector<int> > p5 = standard(&AD, &EH);
+    vector<vector<int> > p6 = standard(&BD, &GH);
+    vector<vector<int> > p7 = standard(&CA, &EF);
 
     // clear A ... H
-    A.clear();
-    B.clear();
-    C.clear();
-    D.clear();
-    E.clear();
-    F.clear();
-    G.clear();
-    H.clear();
+    vector<vector<int> > ().swap(A);
+    vector<vector<int> > ().swap(B);
+    vector<vector<int> > ().swap(C);
+    vector<vector<int> > ().swap(D);
+    vector<vector<int> > ().swap(E);
+    vector<vector<int> > ().swap(F);
+    vector<vector<int> > ().swap(G);
+    vector<vector<int> > ().swap(H);
 
     // parts
-    // TODO modify AplusB to return something that can be used without saving
     vector<vector<int> > p4p2 = AplusB(&p4,&p2,true);
     vector<vector<int> > p4p2p5 = AplusB(&p4p2,&p5);
+    vector<vector<int> > ().swap(p4p2);
     vector<vector<int> > p1p3 = AplusB(&p1,&p3,true);
     vector<vector<int> > p1p3p5 = AplusB(&p1p3,&p5);
+    vector<vector<int> > ().swap(p1p3);
 
     vector<vector<int> > q1 = AplusB(&p4p2p5,&p6);
+    vector<vector<int> > ().swap(p4p2p5);
+    vector<vector<int> > ().swap(p6);
     vector<vector<int> > q2 = AplusB(&p1,&p2);
+    vector<vector<int> > ().swap(p1);
+    vector<vector<int> > ().swap(p2);
     vector<vector<int> > q3 = AplusB(&p3,&p4);
+    vector<vector<int> > ().swap(p3);
+    vector<vector<int> > ().swap(p4);
     vector<vector<int> > q4 = AplusB(&p1p3p5,&p7);
+    vector<vector<int> > ().swap(p1p3p5);
+    vector<vector<int> > ().swap(p7);
 
-    // clear p1...p7
-    p1.clear();
-    p2.clear();
-    p3.clear();
-    p4.clear();
-    p5.clear();
-    p6.clear();
-    p7.clear();
-    p4p2.clear();
-    p4p2p5.clear();
-    p1p3.clear();
-    p1p3p5.clear();
     // product
     // put final parts together
     for (int i = 0; i < n/2; ++i) {
@@ -248,9 +245,9 @@ vector<vector<int> > strassen (vector<vector<int> > *M1, vector<vector<int> > *M
         q3[i].insert(q3[i].end(), q4[i].begin(), q4[i].end());
     }
     q1.insert(q1.end(), q3.begin(), q3.end());
-    q2.clear();
-    q3.clear();
-    q4.clear();
+    vector<vector<int> > ().swap(q2);
+    vector<vector<int> > ().swap(q3);
+    vector<vector<int> > ().swap(q4);
 
     // cout << "n = " << oldn << "\n" << flush;
 
