@@ -267,7 +267,7 @@ vector<vector<float> > generateTriangleMatrix (int p, int n) {
         M[i].resize(n);
     }
     for (int i = 0; i < n; ++i) {
-        for (int j = i; j < n; ++j) {
+        for (int j = i+1; j < n; ++j) {
             int flip = (int)(100.0 * rand() / (RAND_MAX + 1.0)) + 1;
             if (flip <= p) {
                 M[i][j] = 1;
