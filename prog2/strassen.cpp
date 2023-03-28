@@ -260,18 +260,20 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     return q1;
 }
 
-vector<vector<float> > generateTriangleMatrix (float p) {
+vector<vector<float> > generateTriangleMatrix (int p) {
     vector<vector<float> > M; 
-    M.resize(32);
-    for (int i = 0; i < 32; ++i) {
-        M[i].resize(32);
-        for (int j = 0; j < 32; ++j) {
-            float flip = (int)(100.0 * rand() / (RAND_MAX + 1.0)) + 1;
-            if (flip <= p * 100) {
+    M.resize(1024);
+    for (int i = 0; i < 1024; ++i) {
+        M[i].resize(1024);
+        for (int j = i; j < 1024; ++j) {
+            int flip = (int)(100.0 * rand() / (RAND_MAX + 1.0)) + 1;
+            if (flip <= p) {
                 M[i][j] = 1;
+                M[j][i] = 1;
             }
             else {
                 M[i][j] = 0;
+                M[j][i] = 0;
             }
         }
     }
@@ -280,7 +282,7 @@ vector<vector<float> > generateTriangleMatrix (float p) {
 
 int findTriangles (vector<vector<float> > *A) {
     float sum = 0;
-    for (int i = 0; i < 32; ++i) {
+    for (int i = 0; i < 1024; ++i) {
       sum = sum + (*A)[i][i];
     }
     return (int) sum / 6;
@@ -299,10 +301,11 @@ int main(int argc, char * argv[]) {
     } else {
         C = strassen(&A,&B);
     }
-    printDiagonals(&C);
+    
+    // printDiagonals(&C);
 
         // test for p = 0.01
-    vector<vector<float> > trig = generateTriangleMatrix(0.01);
+    vector<vector<float> > trig = generateTriangleMatrix(50);
 
     vector<vector<float> > intermed = strassen(&trig, &trig);
 
