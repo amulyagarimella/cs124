@@ -279,7 +279,7 @@ int findTriangles (vector<vector<int> > *A, int n) {
     return (int) sum / 6;
 }
 
-int main(int argc, char * argv[]) {
+int main(char * argv[]) {
     int n = strtol(argv[2], NULL, 10);
     srand(time(NULL));
     string input = argv[3];
