@@ -199,13 +199,13 @@ vector<vector<float> > strassen (vector<vector<float> > *M1, vector<vector<float
     vector<vector<float> > GH = AplusB(&G,&H);
     vector<vector<float> > EF = AplusB(&E,&F);
     
-    vector<vector<float> > p1 = standard(&A, &FH);
-    vector<vector<float> > p2 = standard(&AB, &H);
-    vector<vector<float> > p3 = standard(&CD, &E);
-    vector<vector<float> > p4 = standard(&D, &GE);
-    vector<vector<float> > p5 = standard(&AD, &EH);
-    vector<vector<float> > p6 = standard(&BD, &GH);
-    vector<vector<float> > p7 = standard(&CA, &EF);
+    vector<vector<float> > p1 = strassen(&A, &FH);
+    vector<vector<float> > p2 = strassen(&AB, &H);
+    vector<vector<float> > p3 = strassen(&CD, &E);
+    vector<vector<float> > p4 = strassen(&D, &GE);
+    vector<vector<float> > p5 = strassen(&AD, &EH);
+    vector<vector<float> > p6 = strassen(&BD, &GH);
+    vector<vector<float> > p7 = strassen(&CA, &EF);
 
     // clear A ... H
     A.clear();
@@ -292,7 +292,7 @@ int findTriangles (vector<vector<float> > *A, int n) {
 
 int main(int argc, char * argv[]) {
     // int n = strtol(argv[2], NULL, 10);
-    int n = 1024;
+    int n = 32;
     srand(time(NULL));
     // string input = argv[3];
     vector<vector<float> > A = generateMatrix(n);
@@ -309,9 +309,7 @@ int main(int argc, char * argv[]) {
 
         // test for p = 0.01
     vector<vector<float> > trig = generateTriangleMatrix(50, n);
-
     vector<vector<float> > intermed = strassen(&trig, &trig);
-
     vector<vector<float> > threeA = strassen(&trig, &intermed);
     cout << findTriangles(&threeA, n);
 }
