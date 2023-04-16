@@ -85,13 +85,47 @@ int repeatedRandom (vector<int> * sequence, int max_iter) {
     
 }
 
-// Hill climbing: TODO
+// Hill climbing
 /*
 TODO: test
 Correctness: ?
 */
-int hillClimbing () {
 
+vector<int> * randomMove (vector<int> * signs) {
+    int n = signs->size();
+    srand(time(NULL));
+    int i = rand() % n;
+    (*signs)[i] = -(*signs)[i];
+    int j = rand() % n;
+    int coinflip = rand() % 2;
+    if (coinflip == 0) {
+        (*signs)[j] = -(*signs)[j];
+    }
+    return signs;
+}
+
+vector<vector<vector<int> > > generateGraph (int n) {
+    // TODO
+    return 
+}
+
+
+int hillClimbing (vector<int> * sequence, int max_iter) {
+    int n = sequence->size();
+    vector<int> signs (n);
+    generateRandomSigns(&signs);
+    vector<int> signs2 (signs);
+    // signs2 = signs;
+    int res, res2;
+    for (int i = 0; i < max_iter; ++i) {
+        randomMove(&signs2);
+        res = residue(sequence, &signs);
+        res2 = residue(sequence, &signs2);
+        if (res > res2) {
+            // hopefully switching pointers will work
+            signs = signs2;
+        }
+    }
 }
 
 // Simulated annealing: TODO
