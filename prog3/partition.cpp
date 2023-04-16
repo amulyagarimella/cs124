@@ -4,6 +4,12 @@
 #include <tuple>
 
 using namespace std;
+
+// Karmarkar-Karp algorithm
+/*
+TODO: test
+Correctness: ?
+*/
 tuple<int,int> findMaxes (vector<int> * sequence) {
     int n = sequence->size();
     int idx_m = 0; 
@@ -33,3 +39,14 @@ int karmarkarKarp (vector<int> * sequence) {
     (*sequence)[get<1>(maxes)] = 0;
     karmarkarKarp(sequence);
 }
+
+// Repeated random: TODO
+
+// Hill climbing: TODO
+
+// Simulated annealing: TODO
+
+// Preprocessing: TODO
+
+// Main: TODO
+
