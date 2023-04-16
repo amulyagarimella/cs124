@@ -37,16 +37,78 @@ int karmarkarKarp (vector<int> * sequence) {
     }
     (*sequence)[get<0>(maxes)] = m - sm;
     (*sequence)[get<1>(maxes)] = 0;
-    karmarkarKarp(sequence);
+    return karmarkarKarp(sequence);
 }
 
-// Repeated random: TODO
+// Repeated random
+/*
+TODO: test
+Correctness: ?
+*/
+vector<int> * generateRandomSigns (vector<int> * signs) {
+    int n = signs->size();
+    srand(time(NULL));
+    for (int i = 0; i < n; ++i) {
+        int val = rand() % 2;
+        if (val == 0) {
+            val = -1;
+        }
+        (*signs)[i] = val;
+    }
+    return signs;
+}
+
+int residue (vector<int> * sequence, vector<int> * signs) {
+    int n = sequence->size();
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+        res += (*sequence)[i] * (*signs)[i];
+    }
+    return res;
+}
+
+int repeatedRandom (vector<int> * sequence, int max_iter) {
+    int n = sequence->size();
+    vector<int> signs (n);
+    vector<int> signs2 (n);
+    generateRandomSigns(&signs);
+    int res, res2;
+    for (int i = 0; i < max_iter; ++i) {
+        generateRandomSigns(&signs2);
+        res = residue(sequence, &signs);
+        res2 = residue(sequence, &signs2);
+        if (res > res2) {
+            // hopefully switching pointers will work
+            signs = signs2;
+        }
+    }
+    
+}
 
 // Hill climbing: TODO
+/*
+TODO: test
+Correctness: ?
+*/
+int hillClimbing () {
+
+}
 
 // Simulated annealing: TODO
+/*
+TODO: test
+Correctness: ?
+*/
+int simulatedAnnealing () {
+    
+}
 
 // Preprocessing: TODO
+/*
+TODO: test
+Correctness: ?
+*/
 
 // Main: TODO
+
 
