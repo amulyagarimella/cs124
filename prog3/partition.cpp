@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <queue>
 
 using namespace std;
 
@@ -36,17 +37,29 @@ Correctness: ?
 }*/
 
 int karmarkarKarp (vector<long> * sequence) {
-    make_heap(sequence->begin(), sequence->end());
-    int m = sequence->back();
+    priority_queue<long> pq (sequence->begin(), sequence->end());
+    /*int m = sequence->back();
     sequence->pop_back();
     int sm = sequence->back();
-    sequence->pop_back();
-    if (sm == 0) {
-        return m;
+    sequence->pop_back();*/
+    long m, sm;
+    bool done = false;
+    // todo while
+    while (!done) {
+        m = pq.top();
+        pq.pop();
+        sm = pq.top();
+        pq.pop();
+        pq.push(m-sm);
+        pq.push(0);
+        if (sm == 0) {
+            done = true;
+        }
     }
-    sequence->push_back(m - sm);
-    sequence->push_back(0);
-    return karmarkarKarp(sequence);
+    /*for (int i = 0; i < sequence->size(); ++i) {
+        cout << (*sequence)[i] << "\n";
+    }*/
+    return m;
 }
 
 // Repeated random
@@ -69,13 +82,13 @@ vector<int> * generateRandomSigns (vector<int> * signs) {
     return signs;
 }
 
-int residue (vector<int> * sequence, vector<int> * signs) {
+int residue (vector<long> * sequence, vector<int> * signs) {
     int n = sequence->size();
     int res = 0;
     for (int i = 0; i < n; ++i) {
         res += (*sequence)[i] * (*signs)[i];
     }
-    return res;
+    return abs(res);
 }
 
 int repeatedRandom (vector<long> * sequence, int max_iter) {
@@ -93,7 +106,7 @@ int repeatedRandom (vector<long> * sequence, int max_iter) {
             signs = signs2;
         }
     }
-    
+    return residue(sequence, &signs);
 }
 
 // Hill climbing
@@ -116,10 +129,13 @@ vector<int> * randomMove (vector<int> * signs) {
     return signs;
 }
 
-vector<vector<vector<int> > > generateGraph (int n) {
+// should return vector<vector<vector<int> > > 
+
+/*
+void generateGraph (int n) {
     // TODO
-    return 
-}
+    return;
+}*/
 
 // TODO better way to generate/change random
 
@@ -139,6 +155,7 @@ int hillClimbing (vector<long> * sequence, int max_iter) {
             signs = signs2;
         }
     }
+    return residue(sequence, &signs);
 }
 
 float cooling (int iter) {
@@ -158,7 +175,7 @@ int simulatedAnnealing (vector<long> * sequence, int max_iter) {
     generateRandomSigns(&signs);
     vector<int> signs2 (signs);
     vector<int> signs3 (signs);
-    int res, res2, res3;
+    int res, res2, res3 = 0;
     res = residue(sequence, &signs);
     res2 = residue(sequence, &signs2);
     for (int i = 0; i < max_iter; ++i) {
@@ -176,12 +193,13 @@ int simulatedAnnealing (vector<long> * sequence, int max_iter) {
                 signs = signs2;
             }
         }
-        if (residue(sequence, &signs3) > residue(sequence, &signs)) {
+        // res3 = residue(sequence, &signs3);
+        if (res3 > residue(sequence, &signs)) {
             // hopefully switching pointers will work
             signs3 = signs;
         }
     }
-    return res3;
+    return residue(sequence, &signs3);
 }
 
 
@@ -207,7 +225,7 @@ int main (int argc, char * argv[]) {
         seq.push_back(stol(line, NULL, 10));
     }
     
-    int max_iter = 12500;
+    int max_iter = 25000;
 
     if (algorithm % 10 == 0) {
         cout << karmarkarKarp(&seq);
