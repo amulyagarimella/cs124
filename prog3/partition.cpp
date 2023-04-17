@@ -12,7 +12,8 @@ using namespace std;
 TODO: test
 Correctness: ?
 */
-tuple<int,int> findMaxes (vector<int> * sequence) {
+
+/*tuple<int,int> findMaxes (vector<int> * sequence) {
     int n = sequence->size();
     int idx_m = 0; 
     int idx_sm = 0;
@@ -29,16 +30,19 @@ tuple<int,int> findMaxes (vector<int> * sequence) {
         }
     }
     return make_tuple(idx_m, idx_sm);
-}
+}*/
+
 int karmarkarKarp (vector<int> * sequence) {
-    tuple<int,int> maxes =  findMaxes(sequence);
-    int m = (*sequence)[get<0>(maxes)];
-    int sm = (*sequence)[get<1>(maxes)];
+    make_heap(sequence->begin(), sequence->end());
+    int m = sequence->back();
+    sequence->pop_back();
+    int sm = sequence->back();
+    sequence->pop_back();
     if (sm == 0) {
         return m;
     }
-    (*sequence)[get<0>(maxes)] = m - sm;
-    (*sequence)[get<1>(maxes)] = 0;
+    sequence->push_back(m - sm);
+    sequence->push_back(0);
     return karmarkarKarp(sequence);
 }
 
@@ -144,7 +148,7 @@ float cooling (int iter) {
 TODO: test
 Correctness: ?
 */
-// TODO: replace residue fn with recursion
+// TODO: recursion
 int simulatedAnnealing (vector<int> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
