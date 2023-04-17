@@ -4,6 +4,9 @@
 #include <tuple>
 #include <tgmath.h>
 #include <random>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -32,7 +35,7 @@ Correctness: ?
     return make_tuple(idx_m, idx_sm);
 }*/
 
-int karmarkarKarp (vector<int> * sequence) {
+int karmarkarKarp (vector<long> * sequence) {
     make_heap(sequence->begin(), sequence->end());
     int m = sequence->back();
     sequence->pop_back();
@@ -75,7 +78,7 @@ int residue (vector<int> * sequence, vector<int> * signs) {
     return res;
 }
 
-int repeatedRandom (vector<int> * sequence, int max_iter) {
+int repeatedRandom (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     vector<int> signs2 (n);
@@ -120,7 +123,7 @@ vector<vector<vector<int> > > generateGraph (int n) {
 
 // TODO better way to generate/change random
 
-int hillClimbing (vector<int> * sequence, int max_iter) {
+int hillClimbing (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
@@ -149,7 +152,7 @@ TODO: test
 Correctness: ?
 */
 // TODO: recursion
-int simulatedAnnealing (vector<int> * sequence, int max_iter) {
+int simulatedAnnealing (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
@@ -190,5 +193,33 @@ Correctness: ?
 */
 
 // Main: TODO
+// ./partition flag algorithm inputfile
+int main (int argc, char * argv[]) {
+    int flag = strtol(argv[1], NULL, 10);
+    int algorithm = strtol(argv[2], NULL, 10);
+    string inputfile = argv[3];
+    ifstream input(inputfile);
+    int seq_len = 100;
+    vector<long> seq (seq_len);
+    string line;
+    for (int i = 0; i < seq_len; ++i) {
+        getline(input, line);
+        seq.push_back(stol(line, NULL, 10));
+    }
+    
+    int max_iter = 12500;
 
+    if (algorithm % 10 == 0) {
+        cout << karmarkarKarp(&seq);
+    }
+    else if (algorithm % 10 == 1) {
+        cout << repeatedRandom(&seq, max_iter);
+    }
+    else if (algorithm % 10 == 2) {
+        cout << hillClimbing(&seq, max_iter);
+    }
+    else if (algorithm % 10 == 3) {
+        cout << simulatedAnnealing(&seq, max_iter);
+    }
+}
 
