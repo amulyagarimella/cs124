@@ -2,6 +2,8 @@
 #include <algorithm> 
 #include <vector>
 #include <tuple>
+#include <tgmath.h>
+#include <random>
 
 using namespace std;
 
@@ -45,6 +47,8 @@ int karmarkarKarp (vector<int> * sequence) {
 TODO: test
 Correctness: ?
 */
+
+// overwrite provided sequence of signs with new ones
 vector<int> * generateRandomSigns (vector<int> * signs) {
     int n = signs->size();
     srand(time(NULL));
@@ -91,6 +95,7 @@ TODO: test
 Correctness: ?
 */
 
+// overwrite provided sequence of signs with random move
 vector<int> * randomMove (vector<int> * signs) {
     int n = signs->size();
     srand(time(NULL));
@@ -109,6 +114,7 @@ vector<vector<vector<int> > > generateGraph (int n) {
     return 
 }
 
+// TODO better way to generate/change random
 
 int hillClimbing (vector<int> * sequence, int max_iter) {
     int n = sequence->size();
@@ -128,14 +134,50 @@ int hillClimbing (vector<int> * sequence, int max_iter) {
     }
 }
 
+float cooling (int iter) {
+    int pwr = int(iter/300);
+    return pow(10,10)*pow(0.8,pwr);
+}
+
 // Simulated annealing: TODO
 /*
 TODO: test
 Correctness: ?
 */
-int simulatedAnnealing () {
-    
+// TODO: replace residue fn with recursion
+int simulatedAnnealing (vector<int> * sequence, int max_iter) {
+    int n = sequence->size();
+    vector<int> signs (n);
+    generateRandomSigns(&signs);
+    vector<int> signs2 (signs);
+    vector<int> signs3 (signs);
+    int res, res2, res3;
+    res = residue(sequence, &signs);
+    res2 = residue(sequence, &signs2);
+    for (int i = 0; i < max_iter; ++i) {
+        randomMove(&signs2);
+        if (res > res2) {
+            // hopefully switching pointers will work
+            signs = signs2;
+        }
+        else {
+            random_device rd;
+            mt19937 gen(rd());
+            uniform_real_distribution<> dis(0.0, 1.0);
+            float prob = exp(-(res2-res)/cooling(i));
+            if (dis(gen) <= prob) {
+                signs = signs2;
+            }
+        }
+        if (residue(sequence, &signs3) > residue(sequence, &signs)) {
+            // hopefully switching pointers will work
+            signs3 = signs;
+        }
+    }
+    return res3;
 }
+
+
 
 // Preprocessing: TODO
 /*
