@@ -96,10 +96,11 @@ int repeatedRandom (vector<long> * sequence, int max_iter) {
     vector<int> signs (n);
     vector<int> signs2 (n);
     generateRandomSigns(&signs);
-    int res, res2;
+    int res = residue(sequence, &signs);
+
+    int res2;
     for (int i = 0; i < max_iter; ++i) {
         generateRandomSigns(&signs2);
-        res = residue(sequence, &signs);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
             // hopefully switching pointers will work
@@ -203,6 +204,50 @@ int simulatedAnnealing (vector<long> * sequence, int max_iter) {
 }
 
 
+vector<int> generatePrepartition (int num_partitions) {
+    vector<int> A_prime (num_partitions);
+    
+    srand(time(NULL));
+    for (int i = 0; i < num_partitions; ++i) {
+        A_prime[i] = rand() % (num_partitions);
+    }
+    return A_prime;  
+}
+
+vector<long> convertPrepartition (vector<long> * sequence, vector<int> * partition) {
+    int n = sequence->size();
+
+    vector<long> A_prime(n, 0);
+
+    for (int j = 0; j < n; ++j) {
+        A_prime[(*partition)[j]] += (*sequence)[j];
+    }
+
+    return A_prime; 
+}
+
+
+// PRR
+int prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
+    int n = sequence->size();
+    vector<int> partition = generatePrepartition(n);
+    vector<long> newSequence = convertPrepartition(sequence, &partition);
+    
+    int res = karmarkarKarp(&newSequence);
+        
+    for (int i = 0; i < max_iter; ++i) {
+        vector<int> partition2 = generatePrepartition(n);
+        vector<long> newSequence2 = convertPrepartition(sequence, &partition2);
+
+        int res2 = karmarkarKarp(&newSequence2);
+        if (res > res2) {
+            // hopefully switching pointers will work
+            res = res2;
+        }
+    }
+    return res;
+}
+
 
 // Preprocessing: TODO
 /*
@@ -215,6 +260,7 @@ Correctness: ?
 int main (int argc, char * argv[]) {
     int flag = strtol(argv[1], NULL, 10);
     int algorithm = strtol(argv[2], NULL, 10);
+
     string inputfile = argv[3];
     ifstream input(inputfile);
     int seq_len = 100;
@@ -227,17 +273,20 @@ int main (int argc, char * argv[]) {
     
     int max_iter = 25000;
 
-    if (algorithm % 10 == 0) {
+    if (algorithm == 0) {
         cout << karmarkarKarp(&seq);
     }
-    else if (algorithm % 10 == 1) {
+    else if (algorithm == 1) {
         cout << repeatedRandom(&seq, max_iter);
     }
-    else if (algorithm % 10 == 2) {
+    else if (algorithm == 2) {
         cout << hillClimbing(&seq, max_iter);
     }
-    else if (algorithm % 10 == 3) {
+    else if (algorithm == 3) {
         cout << simulatedAnnealing(&seq, max_iter);
+    }
+    else if (algorithm == 11) {
+        cout << prepartitionRepeatedRandom(&seq, max_iter);
     }
 }
 
