@@ -127,18 +127,19 @@ Correctness: ?
 */
 
 // overwrite provided sequence of signs with random move
-vector<int> * randomMove (vector<int> * signs) {
+vector<int> * randomMove (vector<int> * signs, vector<int> * signs2) {
     int n = signs->size();
     // srand(time(NULL));
+    *signs = *signs2;
     int i = 0, j=0;
     while (i == j) {
         i = intRand(0,n-1);
         j = intRand(0,n-1);
     }
-    (*signs)[i] = -(*signs)[i];
+    (*signs2)[i] = -(*signs2)[i];
     int coinflip = intRand(0,1);
     if (coinflip == 0) {
-        (*signs)[j] = -(*signs)[j];
+        (*signs2)[j] = -(*signs2)[j];
     }
     return signs;
 }
@@ -161,7 +162,7 @@ int hillClimbing (vector<long> * sequence, int max_iter) {
     // signs2 = signs;
     int res, res2;
     for (int i = 0; i < max_iter; ++i) {
-        randomMove(&signs2);
+        randomMove(&signs, &signs2);
         res = residue(sequence, &signs);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
@@ -172,7 +173,7 @@ int hillClimbing (vector<long> * sequence, int max_iter) {
 }
 
 float cooling (int iter) {
-    int pwr = int(iter/300);
+    float pwr = iter/300;
     return pow(10,10)*pow(0.8,pwr);
 }
 
@@ -193,15 +194,18 @@ int simulatedAnnealing (vector<long> * sequence, int max_iter) {
     vector<int> signs3 (signs);
     int res, res2, res3 = 0;
     res = residue(sequence, &signs);
-    res2 = residue(sequence, &signs2);
     for (int i = 0; i < max_iter; ++i) {
-        randomMove(&signs2);
+        randomMove(&signs, &signs2);
+        res2 = residue(sequence, &signs2);
         if (res > res2) {
             // hopefully switching pointers will work
             signs = signs2;
         }
         else {
+            /*cout << cooling(i) << "\n";
+            cout << -(res2-res) << "\n";*/
             float prob = exp(-(res2-res)/cooling(i));
+            // cout << prob << "\n";
             if (dis(gen) <= prob) {
                 signs = signs2;
             }
