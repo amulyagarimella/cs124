@@ -8,14 +8,18 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <time.h>
+#include <thread>
 
 using namespace std;
 
-random_device rd;
-mt19937 gen(rd());
-uniform_real_distribution<> dis(0.0, 1.0);
-
-// TODO thread safe random
+// thread safe random
+int intRand(const int & min, const int & max) {
+    static mt19937* generator = nullptr;
+    if (!generator) generator = new mt19937(time(NULL)); 
+    uniform_int_distribution<int> distribution(min, max);
+    return distribution(*generator);
+}
 
 // Karmarkar-Karp algorithm
 /*
@@ -79,7 +83,7 @@ vector<int> * generateRandomSigns (vector<int> * signs) {
     int n = signs->size();
     // srand(time(NULL));
     for (int i = 0; i < n; ++i) {
-        int val = rand() % 2;
+        int val = intRand(0,1);
         if (val == 0) {
             val = -1;
         }
@@ -128,11 +132,11 @@ vector<int> * randomMove (vector<int> * signs) {
     // srand(time(NULL));
     int i = 0, j=0;
     while (i == j) {
-        i = rand() % n;
-        j = rand() % n;
+        i = intRand(0,n-1);
+        j = intRand(0,n-1);
     }
     (*signs)[i] = -(*signs)[i];
-    int coinflip = rand() % 2;
+    int coinflip = intRand(0,1);
     if (coinflip == 0) {
         (*signs)[j] = -(*signs)[j];
     }
@@ -179,6 +183,9 @@ Correctness: ?
 */
 // TODO: recursion
 int simulatedAnnealing (vector<long> * sequence, int max_iter) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<> dis(0.0, 1.0);
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
@@ -213,7 +220,7 @@ vector<int> generatePrepartition (int num_partitions) {
     vector<int> P (num_partitions);
     for (int i = 0; i < num_partitions; ++i) {
         // p[i] between 0 and n-1
-        P[i] = rand() % num_partitions;
+        P[i] = intRand(0,num_partitions-1);
     }
     return P;  
 }
@@ -246,10 +253,12 @@ vector<int> * prepartitionRandomMove (vector<int> * partition, vector<int> * par
     int n = partition->size();
     int i = 0, j = 0;
     while ((*partition)[i] == j) {
-        i = rand() % n;
-        j = rand() % n;
+        i = intRand(0,n-1);
+        j = intRand(0,n-1);
     }
-    partition2 = partition;
+    for (int i = 0; i < n; ++i) {
+        (*partition2)[i] = (*partition)[i];
+    }
     (*partition2)[i] = j;
     return partition2;
 }
