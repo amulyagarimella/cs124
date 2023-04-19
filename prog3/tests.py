@@ -26,3 +26,5 @@ for a in list(algos.keys()):
     print(res)
 
 res.to_csv("instances.csv")
+
+# TODO runtimes

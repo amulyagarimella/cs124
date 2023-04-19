@@ -45,7 +45,7 @@ long longRand (const long & min, const long & max) {
 }
 
 // Karmarkar-Karp w/ bin heap
-int karmarkarKarp (vector<long> * sequence) {
+long karmarkarKarp (vector<long> * sequence) {
     priority_queue<long> pq (sequence->begin(), sequence->end());
 
     long m, sm;
@@ -277,14 +277,14 @@ void prepartitionRandomMove (vector<int> * partition, vector<int> * partition2) 
 
 
 // PRR
-long long prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
+long prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
 
     // initial sol
     vector<int> partition = generatePrepartition(n);
     vector<long> newSequence (n);
     convertPrepartition(sequence, &partition, &newSequence);
-    int res = karmarkarKarp(&newSequence);
+    long res = karmarkarKarp(&newSequence), res2;
 
     vector<int> partition2;
     vector<long> newSequence2 (n);
@@ -293,7 +293,7 @@ long long prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
         // random sol
         partition2 = generatePrepartition(n);
         convertPrepartition(sequence, &partition2, &newSequence2);
-        int res2 = karmarkarKarp(&newSequence2);
+        res2 = karmarkarKarp(&newSequence2);
 
         if (res > res2) {
             res = res2;
@@ -304,14 +304,14 @@ long long prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
 
 
 // PHC
-long long prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
+long prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
     int n = sequence->size(); 
 
     vector<int> partition = generatePrepartition(n);
     vector<int> partition2 = partition;
     vector<long> newSequence (n), newSequence2 (n);
     convertPrepartition(sequence, &partition, &newSequence);
-    long long res = karmarkarKarp(&newSequence), res2;
+    long res = karmarkarKarp(&newSequence), res2;
 
     for (int i = 0; i < max_iter; ++i) {
         prepartitionRandomMove(&partition, &partition2);
@@ -327,7 +327,7 @@ long long prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
 }
 
 // PSA
-long long prepartitionSimulatedAnnealing (vector<long> * sequence, int max_iter) {
+long prepartitionSimulatedAnnealing (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
 
     // initialize partitions for S, S', and S''
@@ -340,7 +340,7 @@ long long prepartitionSimulatedAnnealing (vector<long> * sequence, int max_iter)
     convertPrepartition(sequence, &partition, &newSequence);
     newSequence3 = newSequence;
 
-    long long res = karmarkarKarp(&newSequence), res2, res3;
+    long res = karmarkarKarp(&newSequence), res2, res3;
 
     for (int i = 0; i < max_iter; ++i) {
         prepartitionRandomMove(&partition, &partition2);
