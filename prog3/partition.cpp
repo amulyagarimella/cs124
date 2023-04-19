@@ -14,13 +14,24 @@
 using namespace std;
 
 // thread safe random
+// static mt19937* generator = nullptr;
+random_device rd;
+mt19937_64 eng(rd());
+
 int intRand(const int & min, const int & max) {
-    static mt19937* generator = nullptr;
-    if (!generator) generator = new mt19937(time(NULL)); 
     uniform_int_distribution<int> distribution(min, max);
-    return distribution(*generator);
+    return distribution(eng);
 }
 
+float realRand(const float & min, const float & max) {
+    uniform_int_distribution<unsigned long long> distribution(min, max);
+    return distribution(eng);
+}
+
+long long longlongRand (const long long & min, const long long & max) {
+    uniform_int_distribution<unsigned long long> distribution(min, max);
+    return distribution(eng);
+}
 // Karmarkar-Karp algorithm
 /*
 TODO: test
@@ -46,13 +57,13 @@ Correctness: ?
     return make_tuple(idx_m, idx_sm);
 }*/
 
-int karmarkarKarp (vector<long> * sequence) {
-    priority_queue<long> pq (sequence->begin(), sequence->end());
+int karmarkarKarp (vector<long long> * sequence) {
+    priority_queue<long long> pq (sequence->begin(), sequence->end());
     /*int m = sequence->back();
     sequence->pop_back();
     int sm = sequence->back();
     sequence->pop_back();*/
-    long m, sm;
+    long long m, sm;
     bool done = false;
     // todo while
     while (!done) {
@@ -81,6 +92,7 @@ Correctness: ?
 // overwrite provided sequence of signs with new ones
 vector<int> * generateRandomSigns (vector<int> * signs) {
     int n = signs->size();
+    fill(signs->begin(), signs->end(), 0);
     // srand(time(NULL));
     for (int i = 0; i < n; ++i) {
         int val = intRand(0,1);
@@ -92,7 +104,7 @@ vector<int> * generateRandomSigns (vector<int> * signs) {
     return signs;
 }
 
-int residue (vector<long> * sequence, vector<int> * signs) {
+long long residue (vector<long long> * sequence, vector<int> * signs) {
     int n = sequence->size();
     int res = 0;
     for (int i = 0; i < n; ++i) {
@@ -101,14 +113,14 @@ int residue (vector<long> * sequence, vector<int> * signs) {
     return abs(res);
 }
 
-int repeatedRandom (vector<long> * sequence, int max_iter) {
+long long repeatedRandom (vector<long long> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     vector<int> signs2 (n);
     generateRandomSigns(&signs);
-    int res = residue(sequence, &signs);
+    long long res = residue(sequence, &signs);
 
-    int res2;
+    long long res2;
     for (int i = 0; i < max_iter; ++i) {
         generateRandomSigns(&signs2);
         res2 = residue(sequence, &signs2);
@@ -126,23 +138,24 @@ TODO: test
 Correctness: ?
 */
 
-// overwrite provided sequence of signs with random move
-void randomMove (vector<int> * signs, vector<int> * signs2) {
+vector<int> randomMove (vector<int> * signs) {
     int n = signs->size();
     // srand(time(NULL));
-    *signs = *signs2;
+    vector<int> signs2 = *signs;
     int i = 0, j=0;
     while (i == j) {
         i = intRand(0,n-1);
         j = intRand(0,n-1);
     }
-    (*signs2)[i] = -(*signs2)[i];
-
+    /*cout << i << "," << j << "\n";
+    cout << (*signs2)[i] << "\n";
+    cout << (*signs2)[i] << "\n";*/
+    signs2[i] = -signs2[i];
     int coinflip = intRand(0,1);
     if (coinflip == 0) {
-        (*signs2)[j] = -(*signs2)[j];
+        signs2[j] = -signs2[j];
     }
-    return;
+    return signs2;
 }
 
 // should return vector<vector<vector<int> > > 
@@ -155,18 +168,28 @@ void generateGraph (int n) {
 
 // TODO better way to generate/change random
 
-int hillClimbing (vector<long> * sequence, int max_iter) {
+long long hillClimbing (vector<long long> *sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
+    /*for (int i = 0; i < n; ++i) {
+        cout << signs[i] << ",";
+    }
+    cout << "\n";*/
     vector<int> signs2 (signs);
-    
-    // signs2 = signs;
-    int res = residue(sequence, &signs), res2 = 0;
+    long long res = residue(sequence, &signs), res2;
+    // cout << res << "\n";
     for (int i = 0; i < max_iter; ++i) {
-        randomMove(&signs, &signs2);
+        signs2 = randomMove(&signs);
+        /*for (int i = 0; i < n; ++i) {
+            cout << signs2[i] << ",";
+        }
+        cout << "\n";*/
+
+        res = residue(sequence, &signs);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
+            // cout << res << "," << res2 << "\n";
             res = res2;
             signs = signs2;
         }
@@ -184,28 +207,26 @@ float cooling (int iter) {
 TODO: test
 Correctness: ?
 */
-int simulatedAnnealing (vector<long> * sequence, int max_iter) {
-    random_device rd;
-    mt19937 gen(time(NULL));
-    uniform_real_distribution<> dis(0.0, 1.0);
+/*random_device rd;
+mt19937 gen(time(NULL));*/
+long long simulatedAnnealing (vector<long long> * sequence, int max_iter) {
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
     vector<int> signs2 (signs);
     vector<int> signs3 (signs);
-    int res = residue(sequence, &signs), res2 = 0, res3 = 0;
+    long long res = residue(sequence, &signs), res2 = 0, res3 = 0;
     for (int i = 0; i < max_iter; ++i) {
-        randomMove(&signs, &signs2);
+        signs2 = randomMove(&signs);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
+            res = res2;
             signs = signs2;
         }
         else {
-            /*cout << cooling(i) << "\n";
-            cout << -(res2-res) << "\n";*/
             float prob = exp(-(res2-res)/cooling(i));
             // cout << prob << "\n";
-            if (dis(gen) <= prob) {
+            if (realRand(0.0,1.0) <= prob) {
                 res = res2;
                 signs = signs2;
             }
@@ -232,7 +253,7 @@ vector<int> generatePrepartition (int num_partitions) {
 /*
 Essentially A′ is derived by resetting ai to be the sum of all values j with pj = i,
 */
-vector<long> * convertPrepartition (vector<long> * sequence, vector<int> * partition, vector<long> * newSequence) {
+vector<long long> * convertPrepartition (vector<long long> * sequence, vector<int> * partition, vector<long long> * newSequence) {
     int n = sequence->size();
 
     fill(newSequence->begin(), newSequence->end(), 0);
@@ -270,17 +291,17 @@ void prepartitionRandomMove (vector<int> * partition, vector<int> * partition2) 
 
 
 // PRR
-int prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
+long long prepartitionRepeatedRandom (vector<long long> * sequence, int max_iter) {
     int n = sequence->size();
     // srand(time(NULL));
     // cout << "size" << n << "\n";
     vector<int> partition = generatePrepartition(n);
-    vector<long> newSequence (n);
+    vector<long long> newSequence (n);
     convertPrepartition(sequence, &partition, &newSequence);
     
     int res = karmarkarKarp(&newSequence);
     vector<int> partition2;
-    vector<long> newSequence2 (n);
+    vector<long long> newSequence2 (n);
     for (int i = 0; i < max_iter; ++i) {
         partition2 = generatePrepartition(n);
         /*cout << "p2\n";
@@ -298,19 +319,19 @@ int prepartitionRepeatedRandom (vector<long> * sequence, int max_iter) {
 
 
 // PHC
-int prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
+long long prepartitionHillClimbing (vector<long long> * sequence, int max_iter) {
     int n = sequence->size();
     // srand(time(NULL));
     // cout << "size" << n << "\n";
     // generate 
     vector<int> partition = generatePrepartition(n);
-    vector<long> newSequence (n);
+    vector<long long> newSequence (n);
     convertPrepartition(sequence, &partition, &newSequence);
 
     int res = karmarkarKarp(&newSequence);
 
     vector<int> partition2 = partition;
-    vector<long> newSequence2 (n);
+    vector<long long> newSequence2 (n);
     
     int res2;
 
@@ -334,14 +355,14 @@ int prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
 
 // PSA TODO!!
 /*
-int prepartitionSimulatedAnnealing (vector<long> * sequence, int max_iter) {
+int prepartitionSimulatedAnnealing (vector<long long> * sequence, int max_iter) {
     int n = sequence->size();
     // srand(time(NULL));
     // cout << "size" << n << "\n";
     vector<int> partition = generatePrepartition(n);
-    vector<long> newSequence = convertPrepartition(sequence, &partition);
+    vector<long long> newSequence = convertPrepartition(sequence, &partition);
     int res = karmarkarKarp(&newSequence);
-    vector<long> newSequence2;
+    vector<long long> newSequence2;
     for (int i = 0; i < max_iter; ++i) {
         prepartitionRandomMove(&partition);
         newSequence2 = convertPrepartition(sequence, &partition);
@@ -360,6 +381,15 @@ TODO: test
 Correctness: ?
 */
 
+// Generate random sequence of 100 64-bit long longs
+void generateRandomSequence (vector<long long> * seq) {
+    int n = seq->size();
+    for (int i = 0; i < n; ++i) {
+        (*seq)[i] = longlongRand(0,pow(2,64)-1);
+    }
+    return;
+}
+
 // TODO!!!!!!! check srand use
 // Main
 // ./partition flag algorithm inputfile
@@ -368,26 +398,23 @@ int main (int argc, char * argv[]) {
     int flag = strtol(argv[1], NULL, 10);
     int algorithm = strtol(argv[2], NULL, 10);
 
-    string inputfile = argv[3];
-    ifstream input(inputfile);
+    vector<long long> seq;
     int seq_len = 100;
-    vector<long> seq;
-    string line;
-    for (int i = 0; i < seq_len; ++i) {
-        getline(input, line);
-        seq.push_back(stol(line, NULL, 10));
+    if (argc == 4) {
+        string inputfile = argv[3];
+        ifstream input(inputfile);
+        string line;
+        for (int i = 0; i < seq_len; ++i) {
+            getline(input, line);
+            seq.push_back(stol(line, NULL, 10));
+        }
+    } 
+    else {
+        seq.resize(seq_len);
+        generateRandomSequence(&seq);
     }
-
-    // min=29980 | avg=2191094.1
     
-    int max_iter = 5000;
-
-    /*vector<int> example_p = {0, 1, 1, 3, 4};
-    vector<long> example_kk = {10,8,7,6,5};
-    vector<long> new_kk = convertPrepartition(&example_kk, &example_p);
-    for (int i = 0; i < int(new_kk.size()); ++i) {
-        cout << new_kk[i] << "\n";
-    }*/
+    int max_iter = 2000;
 
     if (algorithm == 0) {
         cout << karmarkarKarp(&seq);
