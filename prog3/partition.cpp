@@ -388,7 +388,7 @@ void generateRandomSequenceLONGLONG (vector<long long> * seq) {
 void generateRandomSequence (vector<long> * seq) {
     int n = seq->size();
     for (int i = 0; i < n; ++i) {
-        (*seq)[i] = longRand(0, LONG_MAX);
+        (*seq)[i] = longRand(1, pow(10,12));
     }
     return;
 }
