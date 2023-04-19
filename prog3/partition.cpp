@@ -106,7 +106,7 @@ vector<int> * generateRandomSigns (vector<int> * signs) {
 
 long long residue (vector<long long> * sequence, vector<int> * signs) {
     int n = sequence->size();
-    int res = 0;
+    long long res = 0;
     for (int i = 0; i < n; ++i) {
         res += (*sequence)[i] * (*signs)[i];
     }
