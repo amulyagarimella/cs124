@@ -127,10 +127,10 @@ Correctness: ?
 */
 
 // overwrite provided sequence of signs with random move
-vector<int> * randomMove (vector<int> * signs, vector<int> * signs2) {
+void randomMove (vector<int> * signs, vector<int> * signs2) {
     int n = signs->size();
     // srand(time(NULL));
-    *signs = *signs2;
+    *signs2 = *signs;
     int i = 0, j=0;
     while (i == j) {
         i = intRand(0,n-1);
@@ -141,7 +141,7 @@ vector<int> * randomMove (vector<int> * signs, vector<int> * signs2) {
     if (coinflip == 0) {
         (*signs2)[j] = -(*signs2)[j];
     }
-    return signs;
+    return;
 }
 
 // should return vector<vector<vector<int> > > 
@@ -160,12 +160,12 @@ int hillClimbing (vector<long> * sequence, int max_iter) {
     generateRandomSigns(&signs);
     vector<int> signs2 (signs);
     // signs2 = signs;
-    int res, res2;
+    int res = residue(sequence, &signs), res2 = 0;
     for (int i = 0; i < max_iter; ++i) {
         randomMove(&signs, &signs2);
-        res = residue(sequence, &signs);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
+            res = res2;
             signs = signs2;
         }
     }
@@ -182,23 +182,20 @@ float cooling (int iter) {
 TODO: test
 Correctness: ?
 */
-// TODO: recursion
 int simulatedAnnealing (vector<long> * sequence, int max_iter) {
     random_device rd;
-    mt19937 gen(rd());
+    mt19937 gen(time(NULL));
     uniform_real_distribution<> dis(0.0, 1.0);
     int n = sequence->size();
     vector<int> signs (n);
     generateRandomSigns(&signs);
     vector<int> signs2 (signs);
     vector<int> signs3 (signs);
-    int res, res2, res3 = 0;
-    res = residue(sequence, &signs);
+    int res = residue(sequence, &signs), res2 = 0, res3 = 0;
     for (int i = 0; i < max_iter; ++i) {
         randomMove(&signs, &signs2);
         res2 = residue(sequence, &signs2);
         if (res > res2) {
-            // hopefully switching pointers will work
             signs = signs2;
         }
         else {
@@ -207,6 +204,7 @@ int simulatedAnnealing (vector<long> * sequence, int max_iter) {
             float prob = exp(-(res2-res)/cooling(i));
             // cout << prob << "\n";
             if (dis(gen) <= prob) {
+                res = res2;
                 signs = signs2;
             }
         }
@@ -372,7 +370,7 @@ int main (int argc, char * argv[]) {
 
     // min=29980 | avg=2191094.1
     
-    int max_iter = 25000;
+    int max_iter = 5000;
 
     /*vector<int> example_p = {0, 1, 1, 3, 4};
     vector<long> example_kk = {10,8,7,6,5};
