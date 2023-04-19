@@ -130,17 +130,19 @@ Correctness: ?
 vector<int> * randomMove (vector<int> * signs, vector<int> * signs2) {
     int n = signs->size();
     // srand(time(NULL));
-    *signs = *signs2;
-    int i = 0, j=0;
+    *signs2 = *signs;
+    int i = 0, j = 0;
     while (i == j) {
         i = intRand(0,n-1);
         j = intRand(0,n-1);
     }
     (*signs2)[i] = -(*signs2)[i];
+
     int coinflip = intRand(0,1);
     if (coinflip == 0) {
         (*signs2)[j] = -(*signs2)[j];
     }
+
     return signs;
 }
 
@@ -159,6 +161,7 @@ int hillClimbing (vector<long> * sequence, int max_iter) {
     vector<int> signs (n);
     generateRandomSigns(&signs);
     vector<int> signs2 (signs);
+    
     // signs2 = signs;
     int res, res2;
     for (int i = 0; i < max_iter; ++i) {
@@ -253,18 +256,19 @@ A random move on this state space
 can be defined as follows. Choose two random indices i and j
  from [1, n] with pi  != j and set pi to j.
 */
-vector<int> * prepartitionRandomMove (vector<int> * partition, vector<int> * partition2) {
+void prepartitionRandomMove (vector<int> * partition, vector<int> * partition2) {
     int n = partition->size();
-    int i = 0, j = 0;
+
+    *partition2 = *partition;
+   
+    int i = intRand(0,n-1), j = intRand(0,n-1);
     while ((*partition)[i] == j) {
         i = intRand(0,n-1);
         j = intRand(0,n-1);
     }
-    for (int i = 0; i < n; ++i) {
-        (*partition2)[i] = (*partition)[i];
-    }
     (*partition2)[i] = j;
-    return partition2;
+    
+    return;
 }
 
 
@@ -301,13 +305,18 @@ int prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
     int n = sequence->size();
     // srand(time(NULL));
     // cout << "size" << n << "\n";
+    // generate 
     vector<int> partition = generatePrepartition(n);
     vector<long> newSequence (n);
     convertPrepartition(sequence, &partition, &newSequence);
+
     int res = karmarkarKarp(&newSequence);
+
     vector<int> partition2 = partition;
     vector<long> newSequence2 (n);
+    
     int res2;
+
     for (int i = 0; i < max_iter; ++i) {
         // srand(time(NULL));
         prepartitionRandomMove(&partition, &partition2);
@@ -319,6 +328,8 @@ int prepartitionHillClimbing (vector<long> * sequence, int max_iter) {
         res2 = karmarkarKarp(&newSequence2);
         if (res > res2) {
             partition = partition2;
+            res = res2;
+            newSequence = newSequence2;
         }
     }
     return karmarkarKarp(&newSequence);
