@@ -25,6 +25,10 @@ for a in list(algos.keys()):
     res = pd.concat([res, algo_res],axis=1,ignore_index=True)
     print(res)
 
-res.to_csv("instances.csv")
+res.loc["median"] = res.median(axis=0)
+res.loc["mean"] = res.mean(axis=0)
+res.loc["std"] = res.std(axis=0)
+res.loc["min"] = res.std(axis=0)
+res.loc["max"] = res.std(axis=0)
 
-# TODO runtimes
+res.to_csv("instances.csv")
